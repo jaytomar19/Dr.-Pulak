@@ -1,0 +1,185 @@
+// Data model for drpulakvatsya.com
+// Includes assessment sessions, leads, consent tracking, delivery logs, bookings, and admin users.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BandResult {
+  A
+  B
+  C
+  R
+}
+
+enum LeadStatus {
+  New
+  Contacted
+  Interested
+  Booked
+  Converted
+  NotInterested
+  NoResponse
+  Invalid
+  Closed
+}
+
+enum ConsentType {
+  service
+  marketing
+}
+
+enum DeliveryChannel {
+  whatsapp
+  email
+}
+
+enum DeliveryStatus {
+  queued
+  sent
+  delivered
+  failed
+}
+
+enum ProductType {
+  opd
+  online_live
+  imaging_review
+  second_opinion
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  refunded
+}
+
+enum BookingStatus {
+  confirmed
+  completed
+  no_show
+  cancelled
+  rescheduled
+}
+
+enum AdminRole {
+  doctor
+  admin
+  staff
+}
+
+model assessment_sessions {
+  session_id      String      @id @default(uuid()) @db.Uuid
+  started_at      DateTime    @default(now())
+  campaign_source String?
+  answers         Json        @default("{}")
+  band_result     BandResult?
+  flags           Json        @default("[]")
+  completed_at    DateTime?
+  lead_id         String?     @unique @db.Uuid // fk to leads
+
+  lead            leads?      @relation("SessionToLeadFK", fields: [lead_id], references: [lead_id])
+  leads_with_this leads?      @relation("LeadToSessionFK")
+
+  @@index([band_result])
+  @@index([lead_id])
+}
+
+model leads {
+  lead_id             String     @id @default(uuid()) @db.Uuid
+  name                String
+  phone               String
+  email               String
+  session_id          String?    @unique @db.Uuid // fk to assessment_sessions
+  source              String?
+  landing_page        String?
+  utm_source          String?
+  utm_medium          String?
+  utm_campaign        String?
+  utm_content         String?
+  utm_term            String?
+  referral            String?
+  lead_status         LeadStatus @default(New)
+  appointment_status  String?
+  consultation_status String?
+  notes               String?
+  assigned_staff      String?
+  last_contacted_at   DateTime?
+  next_followup_at    DateTime?
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+
+  session             assessment_sessions? @relation("LeadToSessionFK", fields: [session_id], references: [session_id])
+  session_referenced  assessment_sessions? @relation("SessionToLeadFK")
+
+  consent_records     consent_records[]
+  delivery_logs       delivery_log[]
+  bookings            bookings[]
+
+  @@index([lead_status])
+  @@index([session_id])
+}
+
+model consent_records {
+  consent_id           String      @id @default(uuid()) @db.Uuid
+  lead_id              String      @db.Uuid
+  consent_type         ConsentType
+  consent_text_version String
+  timestamp            DateTime    @default(now())
+  ip_address           String
+  granted              Boolean
+
+  lead                 leads       @relation(fields: [lead_id], references: [lead_id])
+
+  @@index([lead_id])
+}
+
+model delivery_log {
+  id            String         @id @default(uuid()) @db.Uuid
+  lead_id       String         @db.Uuid
+  channel       DeliveryChannel
+  template_name String?
+  status        DeliveryStatus
+  attempted_at  DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  retry_count   Int            @default(0)
+
+  lead          leads          @relation(fields: [lead_id], references: [lead_id])
+
+  @@index([lead_id])
+}
+
+model bookings {
+  booking_id           String        @id @default(uuid()) @db.Uuid
+  lead_id              String        @db.Uuid
+  product              ProductType
+  slot_datetime        DateTime      @db.Timestamptz
+  payment_status       PaymentStatus @default(pending)
+  payment_provider_ref String?
+  status               BookingStatus @default(confirmed)
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @updatedAt
+
+  lead                 leads         @relation(fields: [lead_id], references: [lead_id])
+
+  @@index([lead_id])
+}
+
+model admin_users {
+  user_id       String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  password_hash String
+  name          String
+  role          AdminRole
+  is_active     Boolean   @default(true)
+  last_login_at DateTime?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  @@index([email])
+}

@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "results": {
+    "A": {
+      "summary": "PLACEHOLDER",
+      "possible_causes": [
+        "PLACEHOLDER"
+      ],
+      "next_step": "PLACEHOLDER",
+      "show_ctas": true,
+      "cta_options": [
+        "PLACEHOLDER"
+      ],
+      "fire_internal_alert": false,
+      "exclude_from_automation": false
+    },
+    "B": {
+      "summary": "PLACEHOLDER",
+      "possible_causes": [
+        "PLACEHOLDER"
+      ],
+      "next_step": "PLACEHOLDER",
+      "show_ctas": true,
+      "cta_options": [
+        "PLACEHOLDER"
+      ],
+      "fire_internal_alert": false,
+      "exclude_from_automation": false
+    },
+    "C": {
+      "summary": "PLACEHOLDER",
+      "possible_causes": [
+        "PLACEHOLDER"
+      ],
+      "next_step": "PLACEHOLDER",
+      "show_ctas": true,
+      "cta_options": [
+        "PLACEHOLDER"
+      ],
+      "fire_internal_alert": false,
+      "exclude_from_automation": false
+    },
+    "R": {
+      "summary": "PLACEHOLDER",
+      "possible_causes": [
+        "PLACEHOLDER"
+      ],
+      "next_step": "PLACEHOLDER",
+      "show_ctas": false,
+      "cta_options": [],
+      "fire_internal_alert": true,
+      "exclude_from_automation": true
+    }
+  }
+}
