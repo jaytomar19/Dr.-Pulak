@@ -26,7 +26,7 @@ export default function OnlineConsultPage() {
       </section>
 
       <section style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>What's Included</h2>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>What&apos;s Included</h2>
         <ul style={{ color: '#4b5563', paddingLeft: '1.5rem', marginBottom: '1rem', lineHeight: '1.6' }}>
           <li>15-minute video call with Dr. Pulak Vatsya</li>
           <li>Review of your medical history and imaging</li>

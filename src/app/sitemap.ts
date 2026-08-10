@@ -1,9 +1,15 @@
 import { MetadataRoute } from 'next';
 
+type SitemapRoute = {
+  url: string;
+  priority: number;
+  changeFrequency?: MetadataRoute.Sitemap[number]['changeFrequency'];
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://drpulakvatsya.com';
 
-  const routes = [
+  const routes: SitemapRoute[] = [
     { url: '', priority: 1.0, changeFrequency: 'weekly' },
     { url: '/knee-replacement/', priority: 0.9 },
     { url: '/acl/', priority: 0.9 },
@@ -26,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return routes.map((route) => ({
     url: `${baseUrl}${route.url}`,
     lastModified: new Date(),
-    changeFrequency: (route.changeFrequency as any) || 'monthly',
+    changeFrequency: route.changeFrequency || 'monthly',
     priority: route.priority,
   }));
 }

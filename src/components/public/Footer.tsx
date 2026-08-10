@@ -15,7 +15,7 @@ export default function Footer() {
             <li><Link href="/" className="footer__link">Home</Link></li>
             <li><Link href="/about/" className="footer__link">About</Link></li>
             <li><Link href="/blog/" className="footer__link">Blog</Link></li>
-            <li><Link href="/contact/" className="footer__link">Contact</Link></li>
+            <li><Link href="/consult/" className="footer__link">Contact</Link></li>
           </ul>
         </div>
         

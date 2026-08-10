@@ -99,7 +99,7 @@ export default function KneePainPage() {
           <ul>
             <li><a href="#causes">Common Causes</a></li>
             <li><a href="#chondromalacia">Chondromalacia Patellae</a></li>
-            <li><a href="#runners-knee">Runner's Knee</a></li>
+            <li><a href="#runners-knee">Runner&apos;s Knee</a></li>
             <li><a href="#stairs">Pain Going Down Stairs</a></li>
             <li><a href="#when-to-seek-help">When to Seek Help</a></li>
             <li><a href="#treatment">Non-Surgical Treatment Options</a></li>
@@ -120,7 +120,7 @@ export default function KneePainPage() {
         <AssessmentCTA />
 
         <section id="runners-knee" className="condition-hub__section">
-          <h2>Runner's Knee</h2>
+          <h2>Runner&apos;s Knee</h2>
           <p>Also known as patellofemoral pain syndrome, this causes pain in the front of the knee and around the patella, often aggravated by running or sitting for long periods.</p>
         </section>
 
@@ -131,7 +131,7 @@ export default function KneePainPage() {
 
         <section id="when-to-seek-help" className="condition-hub__section">
           <h2>When to Seek Help</h2>
-          <p>If you experience sudden swelling, severe pain, instability, or if pain prevents you from performing daily activities, it's time to consult a doctor.</p>
+          <p>If you experience sudden swelling, severe pain, instability, or if pain prevents you from performing daily activities, it&apos;s time to consult a doctor.</p>
         </section>
 
         <section id="treatment" className="condition-hub__section">
@@ -148,8 +148,8 @@ export default function KneePainPage() {
             <p>Pain when going down stairs is often related to patellofemoral pain syndrome or chondromalacia patellae, where the kneecap does not track smoothly.</p>
           </details>
           <details>
-            <summary>What is runner's knee?</summary>
-            <p>Runner's knee is a broad term describing pain around or behind the kneecap, common in active individuals.</p>
+            <summary>What is runner&apos;s knee?</summary>
+            <p>Runner&apos;s knee is a broad term describing pain around or behind the kneecap, common in active individuals.</p>
           </details>
           <details>
             <summary>Can knee pain be treated without surgery?</summary>

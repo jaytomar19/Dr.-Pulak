@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET() {
   try {
     // TODO: Auth check - Admin only
     // TODO: Get booking detail
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH() {
   try {
     // TODO: Auth check - Admin only
     // TODO: Update booking status (cancel, reschedule, mark no-show, complete)

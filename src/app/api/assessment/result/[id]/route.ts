@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET() {
   try {
     // TODO: Rate limiting check
     // TODO: auth check to see if lead has completed contact capture

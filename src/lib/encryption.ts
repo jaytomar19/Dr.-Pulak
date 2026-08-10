@@ -2,10 +2,10 @@ import crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-gcm';
 // Ensure ENCRYPTION_KEY is provided in the environment variables and is 64 hex characters (32 bytes)
-const ENCRYPTION_KEY_HEX = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+const ENCRYPTION_KEY_HEX = process.env.ENCRYPTION_KEY;
 
-if (ENCRYPTION_KEY_HEX.length !== 64) {
-  throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (64 hex characters)');
+if (!ENCRYPTION_KEY_HEX || !/^[0-9a-fA-F]{64}$/.test(ENCRYPTION_KEY_HEX)) {
+  throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (64 hexadecimal characters)');
 }
 
 const key = Buffer.from(ENCRYPTION_KEY_HEX, 'hex');

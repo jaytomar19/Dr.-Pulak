@@ -33,7 +33,7 @@ export default function AboutPage() {
       <section style={{ marginBottom: '3rem' }}>
         <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Philosophy of Care</h2>
         <p style={{ color: '#4b5563', fontSize: '1.1rem', lineHeight: '1.7' }}>
-          "Every patient's pain and lifestyle goals are unique. My approach centers on a thorough assessment and open communication. Whether a condition requires surgical intervention or can be managed through conservative methods, my goal is to provide the most effective and appropriate care."
+          &ldquo;Every patient&apos;s pain and lifestyle goals are unique. My approach centers on a thorough assessment and open communication. Whether a condition requires surgical intervention or can be managed through conservative methods, my goal is to provide the most effective and appropriate care.&rdquo;
         </p>
       </section>
 

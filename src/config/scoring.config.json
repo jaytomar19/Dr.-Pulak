@@ -15,6 +15,10 @@
     }
   },
   "flag_overrides": [
-    "RED_FLAG_EXAMPLE"
+    {
+      "flag": "RED_FLAG_EXAMPLE",
+      "forces_band": "R",
+      "description": "PLACEHOLDER — doctor-defined red-flag criteria required"
+    }
   ]
 }

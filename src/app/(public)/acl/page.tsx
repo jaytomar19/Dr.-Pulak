@@ -114,7 +114,7 @@ export default function ACLPage() {
 
         <section id="symptoms" className="condition-hub__section">
           <h2>Symptoms</h2>
-          <p>Common symptoms include a loud "pop" at the time of injury, severe pain and inability to continue activity, rapid swelling, and a feeling of instability.</p>
+          <p>Common symptoms include a loud &ldquo;pop&rdquo; at the time of injury, severe pain and inability to continue activity, rapid swelling, and a feeling of instability.</p>
         </section>
 
         <AssessmentCTA />

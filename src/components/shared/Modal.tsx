@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface ModalProps {
@@ -21,13 +21,6 @@ export const Modal: React.FC<ModalProps> = ({
   showCloseButton = true,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -74,7 +67,7 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [onClose]);
 
-  if (!mounted) return null;
+  if (typeof document === 'undefined') return null;
 
   const content = (
     <dialog

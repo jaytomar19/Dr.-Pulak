@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH() {
   try {
     // TODO: Auth check - doctor role only
     // TODO: Update admin user (role, is_active)
@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE() {
   try {
     // TODO: Auth check - doctor role only
     // TODO: Deactivate admin user. Cannot delete sole doctor.

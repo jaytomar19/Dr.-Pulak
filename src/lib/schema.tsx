@@ -133,7 +133,7 @@ export function generateArticleSchema(title: string, description: string, url: s
   };
 }
 
-export function SchemaScript({ schema }: { schema: any }) {
+export function SchemaScript({ schema }: { schema: unknown }) {
   return (
     <script
       type="application/ld+json"

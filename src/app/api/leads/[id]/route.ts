@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET() {
   try {
     // TODO: Auth check - Admin only
     // TODO: fetch single lead detail including related assessment, bookings, delivery log, consent records
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH() {
   try {
     // TODO: Auth check - Admin only
     // const body = await req.json();
@@ -24,7 +24,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE() {
   try {
     // TODO: Auth check - Admin only
     // TODO: soft-delete/archive lead

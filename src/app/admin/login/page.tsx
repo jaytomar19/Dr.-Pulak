@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
       if (result?.error) {
         setError('Invalid credentials');
       } else {
-        router.push('/dashboard');
+        router.push('/admin/dashboard');
       }
     } catch (err) {
       if (err instanceof z.ZodError) {
