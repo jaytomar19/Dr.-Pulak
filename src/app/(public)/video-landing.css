@@ -1,0 +1,114 @@
+.video-landing-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-landing {
+  flex: 1;
+}
+
+.video-landing__above-fold {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.video-landing__photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-landing__h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  max-width: 800px;
+  line-height: 1.2;
+}
+
+.video-landing__explainer {
+  font-size: 1.25rem;
+  color: #475569;
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
+
+.video-landing__cta {
+  font-size: 1.25rem;
+  padding: 1rem 2rem;
+  min-width: 280px;
+  border-radius: 9999px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+.video-landing__cta:hover {
+  background-color: #1d4ed8;
+}
+
+.video-landing__below-fold {
+  padding: 4rem 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.video-landing__section {
+  margin-bottom: 4rem;
+}
+
+.video-landing__centered-cta {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.video-landing__legal-footer {
+  padding: 2rem 1rem;
+  background-color: #1e293b;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.video-landing__legal-footer .container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.video-landing__legal-footer a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.video-landing__legal-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .video-landing__h1 {
+    font-size: 2rem;
+  }
+}
