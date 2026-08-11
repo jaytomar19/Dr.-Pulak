@@ -2,13 +2,15 @@ import crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-gcm';
 // Ensure ENCRYPTION_KEY is provided in the environment variables and is 64 hex characters (32 bytes)
-const ENCRYPTION_KEY_HEX = process.env.ENCRYPTION_KEY;
+function getEncryptionKey(): Buffer {
+  const encryptionKeyHex = process.env.ENCRYPTION_KEY;
 
-if (!ENCRYPTION_KEY_HEX || !/^[0-9a-fA-F]{64}$/.test(ENCRYPTION_KEY_HEX)) {
-  throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (64 hexadecimal characters)');
+  if (!encryptionKeyHex || !/^[0-9a-fA-F]{64}$/.test(encryptionKeyHex)) {
+    throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (64 hexadecimal characters)');
+  }
+
+  return Buffer.from(encryptionKeyHex, 'hex');
 }
-
-const key = Buffer.from(ENCRYPTION_KEY_HEX, 'hex');
 
 /**
  * Encrypts a text string using AES-256-GCM.
@@ -19,7 +21,7 @@ export function encrypt(text: string): string {
   if (!text) return text;
   
   const iv = crypto.randomBytes(12);
-  const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
+  const cipher = crypto.createCipheriv(ALGORITHM, getEncryptionKey(), iv);
   
   let encrypted = cipher.update(text, 'utf8', 'hex');
   encrypted += cipher.final('hex');
@@ -45,7 +47,7 @@ export function decrypt(hash: string): string {
     const iv = Buffer.from(ivHex, 'hex');
     const authTag = Buffer.from(authTagHex, 'hex');
     
-    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
+    const decipher = crypto.createDecipheriv(ALGORITHM, getEncryptionKey(), iv);
     decipher.setAuthTag(authTag);
     
     let decrypted = decipher.update(encryptedHex, 'hex', 'utf8');

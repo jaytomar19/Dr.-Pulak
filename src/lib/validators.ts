@@ -1,29 +1,31 @@
 import { z } from 'zod';
 
 export const CreateSessionSchema = z.object({
-  campaign_source: z.string().optional(),
-  utm_source: z.string().optional(),
-  utm_medium: z.string().optional(),
-  utm_campaign: z.string().optional(),
-  utm_content: z.string().optional(),
-  utm_term: z.string().optional(),
+  campaign_source: z.string().trim().max(120).optional(),
+  utm_source: z.string().trim().max(120).optional(),
+  utm_medium: z.string().trim().max(120).optional(),
+  utm_campaign: z.string().trim().max(120).optional(),
+  utm_content: z.string().trim().max(120).optional(),
+  utm_term: z.string().trim().max(120).optional(),
 });
 export type CreateSession = z.infer<typeof CreateSessionSchema>;
 
 export const UpdateSessionSchema = z.object({
-  question_id: z.string(),
-  answer_value: z.string(),
+  question_id: z.string().trim().min(1).max(32),
+  answer_value: z.string().trim().min(1).max(120),
 });
 export type UpdateSession = z.infer<typeof UpdateSessionSchema>;
 
 export const CreateLeadSchema = z.object({
   session_id: z.string().uuid(),
-  name: z.string().min(2, 'Name must be at least 2 characters'),
+  name: z.string().trim().min(2, 'Name must be at least 2 characters').max(120),
   phone: z.string().regex(/^(?:\+91|91)?[6789]\d{9}$/, 'Invalid Indian mobile number'),
   email: z.string().email('Invalid email address'),
-  consent_service: z.boolean(),
+  consent_service: z.literal(true, {
+    errorMap: () => ({ message: 'Service consent is required to continue' }),
+  }),
   consent_marketing: z.boolean(),
-  consent_text_version: z.string(),
+  consent_text_version: z.string().trim().min(1).max(64),
 });
 export type CreateLead = z.infer<typeof CreateLeadSchema>;
 
@@ -58,7 +60,8 @@ export type AdminUserCreate = z.infer<typeof AdminUserCreateSchema>;
 
 export const LeadStatusUpdateSchema = z.object({
   lead_status: z.enum([
-    'new', 'contacted', 'scheduled', 'completed', 'dropped', 'junk'
+    'New', 'Contacted', 'Interested', 'Booked', 'Converted',
+    'NotInterested', 'NoResponse', 'Invalid', 'Closed',
   ]),
   notes: z.string().optional(),
 });

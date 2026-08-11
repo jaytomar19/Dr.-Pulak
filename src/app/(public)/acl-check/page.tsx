@@ -15,7 +15,7 @@ export default function AclCheckPage() {
         <div className="video-landing__photo">PV</div>
         <h1 className="video-landing__h1">Worried About Your ACL? Find Out in 90 Seconds</h1>
         <p className="video-landing__explainer">Take our free 90-second knee health check to find out.</p>
-        <Link href="/knee-check/" className="video-landing__cta">
+        <Link href="/assessment" className="video-landing__cta">
           Start Free Knee Check
         </Link>
       </section>
@@ -34,7 +34,7 @@ export default function AclCheckPage() {
         </div>
 
         <div className="video-landing__centered-cta">
-          <Link href="/knee-check/" className="video-landing__cta">
+          <Link href="/assessment" className="video-landing__cta">
             Start Free Knee Check
           </Link>
         </div>
