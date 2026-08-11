@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PRACTICE_CONFIG } from '@/config/practice';
 
 export default function Footer() {
   return (
@@ -7,11 +8,11 @@ export default function Footer() {
         <div className="footer__top">
           <div className="footer__brand-col">
             <Link href="/" className="footer__brand">
-              <span className="footer__brand-name">Dr. Pulak Vatsya</span>
-              <span className="footer__brand-title">Orthopaedic & Knee Specialist</span>
+              <span className="footer__brand-name">{PRACTICE_CONFIG.doctorName}</span>
+              <span className="footer__brand-title">{PRACTICE_CONFIG.specialty}</span>
             </Link>
             <p className="footer__brand-desc">
-              Dedicated orthopaedic surgeon practicing at StepUp Joints, Lajpat Nagar, South Delhi. Specializing in evidence-based knee care, joint preservation, and robotic-assisted surgeries.
+              Dedicated orthopaedic surgeon practicing at {PRACTICE_CONFIG.clinicName}, {PRACTICE_CONFIG.location}. Specializing in evidence-based knee care, joint preservation, and robotic-assisted surgeries.
             </p>
           </div>
 
@@ -39,9 +40,9 @@ export default function Footer() {
           <div className="footer__nav-col">
             <h4 className="footer__col-title">Clinic & Practice</h4>
             <ul className="footer__contact-info">
-              <li>📍 StepUp Joints, Lajpat Nagar, New Delhi</li>
-              <li>📞 Phone: +91 XXXXXXXXXX</li>
-              <li>✉️ Email: contact@drpulakvatsya.com</li>
+              <li>📍 {PRACTICE_CONFIG.clinicName}, {PRACTICE_CONFIG.location}</li>
+              <li>📞 Phone: {PRACTICE_CONFIG.phone}</li>
+              <li>✉️ Email: {PRACTICE_CONFIG.email}</li>
               <li>🕒 Mon – Sat: 10:00 AM – 6:00 PM</li>
             </ul>
           </div>
@@ -49,7 +50,7 @@ export default function Footer() {
 
         <div className="footer__bottom">
           <p className="footer__copyright">
-            &copy; {new Date().getFullYear()} Dr. Pulak Vatsya. All rights reserved. Medical Disclaimer: Content on this site is for educational purposes and does not replace formal medical evaluation.
+            &copy; {new Date().getFullYear()} {PRACTICE_CONFIG.doctorName}. All rights reserved. Medical Disclaimer: Content on this site is for educational purposes and does not replace formal medical evaluation.
           </p>
           <div className="footer__legal">
             <Link href="/privacy-policy/" className="footer__legal-link">Privacy Policy</Link>

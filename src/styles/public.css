@@ -1210,3 +1210,146 @@
     text-align: center;
   }
 }
+
+/* ==========================================================================
+   INSTAGRAM REELS & PLACEHOLDER STYLING
+   ========================================================================== */
+.reels-section {
+  padding: var(--space-16) 0;
+  background-color: var(--color-bg-surface);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.placeholder-content-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.badge--neutral {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+}
+
+.reels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+.reel-card {
+  background-color: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.reel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
+}
+
+.reel-card__aspect {
+  position: relative;
+  aspect-ratio: 9 / 14;
+  background: linear-gradient(135deg, #0B192C 0%, #0A6E6E 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reel-card__overlay {
+  position: absolute;
+  inset: 0;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(11, 25, 44, 0.7) 100%);
+}
+
+.reel-card__category {
+  align-self: flex-start;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  background-color: rgba(10, 110, 110, 0.85);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reel-card__play-icon {
+  align-self: center;
+  margin: auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #E1306C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast);
+}
+
+.reel-card:hover .reel-card__play-icon {
+  transform: scale(1.1);
+  background-color: #ffffff;
+}
+
+.reel-card__content {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.reel-card__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-navy);
+  margin-bottom: var(--space-2);
+  line-height: 1.35;
+}
+
+.reel-card__description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+  line-height: var(--line-height-relaxed);
+  flex: 1;
+}
+
+.reel-card__cta {
+  align-self: flex-start;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+.insights-card__placeholder-thumb {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PRACTICE_CONFIG } from '@/config/practice';
 
 export default function LocationMapContact() {
   return (
@@ -13,13 +14,13 @@ export default function LocationMapContact() {
           {/* Card 1: In-Person Clinic */}
           <div className="location-card">
             <div className="location-card__badge">IN-PERSON OPDS</div>
-            <h3 className="location-card__title">StepUp Joints — South Delhi</h3>
+            <h3 className="location-card__title">{PRACTICE_CONFIG.clinicName} — South Delhi</h3>
             <p className="location-card__subtitle">Full-service orthopaedic consultation, physical examination, and digital imaging review.</p>
             
             <div className="location-card__details">
               <div className="location-detail">
                 <span className="location-detail__label">Address</span>
-                <span className="location-detail__value">StepUp Joints, Lajpat Nagar, New Delhi</span>
+                <span className="location-detail__value">{PRACTICE_CONFIG.clinicName}, {PRACTICE_CONFIG.location}</span>
               </div>
               <div className="location-detail">
                 <span className="location-detail__label">Consultation Hours</span>
@@ -27,7 +28,7 @@ export default function LocationMapContact() {
               </div>
               <div className="location-detail">
                 <span className="location-detail__label">Contact</span>
-                <span className="location-detail__value">Phone: +91 XXXXXXXXXX · contact@drpulakvatsya.com</span>
+                <span className="location-detail__value">Phone: {PRACTICE_CONFIG.phone} · {PRACTICE_CONFIG.email}</span>
               </div>
             </div>
 

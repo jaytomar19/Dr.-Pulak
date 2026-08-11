@@ -1,83 +1,29 @@
+import React from 'react';
 import Link from 'next/link';
-import { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: '404 — Page Not Found',
+export const metadata = {
+  title: 'Page Not Found | Dr. Pulak Vatsya',
+  description: 'The requested page could not be found on Dr. Pulak Vatsya orthopaedic specialist practice website.',
 };
 
 export default function NotFound() {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '80vh',
-      textAlign: 'center',
-      padding: '2rem',
-      backgroundColor: 'var(--background, #f9fafb)',
-      color: 'var(--foreground, #1f2937)'
-    }}>
-      <h1 style={{
-        fontSize: '6rem',
-        fontWeight: 'bold',
-        color: 'var(--primary, #0f766e)',
-        marginBottom: '1rem',
-        lineHeight: 1
-      }}>
-        404
-      </h1>
-      <h2 style={{
-        fontSize: '2rem',
-        fontWeight: '600',
-        marginBottom: '1rem'
-      }}>
-        Page Not Found
-      </h2>
-      <p style={{
-        fontSize: '1.125rem',
-        color: 'var(--muted, #4b5563)',
-        marginBottom: '2rem',
-        maxWidth: '400px'
-      }}>
-        The page you&apos;re looking for doesn&apos;t exist or has been moved.
-      </p>
-      
-      <div style={{
-        display: 'flex',
-        gap: '1rem',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
-      }}>
-        <Link 
-          href="/"
-          style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: 'var(--primary, #0f766e)',
-            color: 'white',
-            borderRadius: '0.375rem',
-            textDecoration: 'none',
-            fontWeight: '500',
-            transition: 'opacity 0.2s'
-          }}
-        >
-          Go Home
-        </Link>
-        <Link 
-          href="/knee-check/"
-          style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: 'transparent',
-            color: 'var(--primary, #0f766e)',
-            border: '2px solid var(--primary, #0f766e)',
-            borderRadius: '0.375rem',
-            textDecoration: 'none',
-            fontWeight: '500',
-            transition: 'background-color 0.2s'
-          }}
-        >
-          Take Free Knee Check
-        </Link>
+    <div className="not-found-page section-padding text-center" style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="container" style={{ maxWidth: '600px' }}>
+        <span className="eyebrow" style={{ fontSize: '0.875rem', letterSpacing: '0.1em' }}>404 ERROR</span>
+        <h1 className="hero__title" style={{ fontSize: '2.5rem', margin: '1rem 0' }}>Page Not Found</h1>
+        <p className="hero__subtitle" style={{ marginBottom: '2rem', color: 'var(--color-text-secondary)' }}>
+          The page or resource you requested could not be located. You can navigate back to the home page or take our free 90-second knee health assessment.
+        </p>
+
+        <div className="cta-group" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="/" className="btn btn--primary">
+            Return to Homepage
+          </Link>
+          <Link href="/knee-check/" className="btn btn--ghost">
+            Take Free Knee Check
+          </Link>
+        </div>
       </div>
     </div>
   );

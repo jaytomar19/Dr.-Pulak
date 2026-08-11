@@ -4,6 +4,7 @@ import AssessmentCTA from '@/components/public/AssessmentCTA';
 import CredentialsBlock from '@/components/public/CredentialsBlock';
 import GoogleReviewsWidget from '@/components/public/GoogleReviewsWidget';
 import YouTubeRecentVideos from '@/components/public/YouTubeRecentVideos';
+import InstagramReelsWidget from '@/components/public/InstagramReelsWidget';
 import OnlineConsultExplainer from '@/components/public/OnlineConsultExplainer';
 import LocationMapContact from '@/components/public/LocationMapContact';
 import ConditionHubCards from '@/components/public/ConditionHubCards';
@@ -162,7 +163,10 @@ export default function HomePage() {
       {/* 6. CLINICAL INSIGHTS */}
       <YouTubeRecentVideos />
 
-      {/* 7. REVIEWS & FEEDBACK */}
+      {/* 7. INSTAGRAM REELS */}
+      <InstagramReelsWidget />
+
+      {/* 8. REVIEWS & FEEDBACK */}
       <GoogleReviewsWidget />
 
       {/* 8. CLINIC LOCATION & CONTACT */}

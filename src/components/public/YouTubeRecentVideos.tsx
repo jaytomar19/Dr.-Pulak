@@ -1,5 +1,9 @@
 'use client';
 
+import React from 'react';
+import Image from 'next/image';
+import { YOUTUBE_VIDEOS_CONFIG } from '@/config/media';
+
 interface YouTubeRecentVideosProps {
   channelName?: string;
   maxVideos?: number;
@@ -9,30 +13,8 @@ export default function YouTubeRecentVideos({
   channelName = 'Dr. Pulak Vatsya',
   maxVideos = 3 
 }: YouTubeRecentVideosProps) {
-  
-  const videos = [
-    { 
-      id: 'dQw4w9WgXcQ', 
-      category: 'PATIENT EDUCATION',
-      title: 'What to Expect Before & After Knee Replacement Surgery', 
-      date: 'Recent Insight',
-      duration: '5:20'
-    },
-    { 
-      id: 'dQw4w9WgXcQ', 
-      category: 'SPORTS INJURY',
-      title: 'ACL Tear Recovery Timeline & Rehabilitation Phases', 
-      date: 'Recent Insight',
-      duration: '6:45'
-    },
-    { 
-      id: 'dQw4w9WgXcQ', 
-      category: 'JOINT PRESERVATION',
-      title: 'Non-Surgical Treatments & Exercises for Chronic Knee Pain', 
-      date: 'Recent Insight',
-      duration: '4:15'
-    },
-  ].slice(0, maxVideos);
+  const { videos, isPlaceholder } = YOUTUBE_VIDEOS_CONFIG;
+  const displayVideos = videos.slice(0, maxVideos);
 
   return (
     <section className="insights-section">
@@ -42,25 +24,46 @@ export default function YouTubeRecentVideos({
             <span className="eyebrow">CLINICAL INSIGHTS</span>
             <h2 className="insights-title">Educational Resources & Patient Guidance from {channelName}</h2>
           </div>
-          <a href="#" className="btn btn--ghost btn--sm insights-link" target="_blank" rel="noopener noreferrer">
+          <a
+            href={isPlaceholder ? '#' : 'https://youtube.com'}
+            className="btn btn--ghost btn--sm insights-link"
+            target={isPlaceholder ? '_self' : '_blank'}
+            rel="noopener noreferrer"
+            onClick={(e) => isPlaceholder && e.preventDefault()}
+          >
             Visit Video Library →
           </a>
         </div>
+
+        {isPlaceholder && (
+          <div className="placeholder-content-banner" style={{ marginBottom: '1.5rem' }}>
+            <span className="badge badge--neutral">
+              DEVELOPMENT PLACEHOLDER — Real YouTube Video IDs to be provided by client
+            </span>
+          </div>
+        )}
         
         <div className="insights-grid">
-          {videos.map((video, idx) => (
-            <article key={idx} className="insights-card">
+          {displayVideos.map((video) => (
+            <article key={video.id} className="insights-card">
               <div className="insights-card__media">
-                <img 
-                  src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`} 
-                  alt={video.title}
-                  className="insights-card__thumb" 
-                  loading="lazy"
-                />
+                {video.videoId ? (
+                  <Image 
+                    src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`} 
+                    alt={video.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="insights-card__thumb"
+                  />
+                ) : (
+                  <div className="insights-card__placeholder-thumb">
+                    <span>🎬 Video Coming Soon</span>
+                  </div>
+                )}
                 <div className="insights-card__play">
                   <span>▶</span>
                 </div>
-                <span className="insights-card__duration">{video.duration}</span>
+                {video.duration && <span className="insights-card__duration">{video.duration}</span>}
               </div>
               <div className="insights-card__body">
                 <span className="insights-card__category">{video.category}</span>
@@ -68,6 +71,18 @@ export default function YouTubeRecentVideos({
               </div>
             </article>
           ))}
+        </div>
+
+        <div className="insights-bottom-action text-center" style={{ marginTop: '2.5rem' }}>
+          <a
+            href={isPlaceholder ? '#' : 'https://youtube.com'}
+            target={isPlaceholder ? '_self' : '_blank'}
+            rel="noopener noreferrer"
+            className="btn btn--ghost btn--md"
+            onClick={(e) => isPlaceholder && e.preventDefault()}
+          >
+            Browse Full Educational Video Library →
+          </a>
         </div>
       </div>
     </section>

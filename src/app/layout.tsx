@@ -1,12 +1,19 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: {
     default: 'Dr. Pulak Vatsya — Orthopaedic Knee Surgeon, South Delhi',
     template: '%s | Dr. Pulak Vatsya',
   },
-  description: 'Expert orthopaedic knee care by Dr. Pulak Vatsya at StepUp Joints, Lajpat Nagar, New Delhi. Robotic knee replacement, ACL surgery, knee pain treatment. Book your consultation today.',
+  description: 'Expert orthopaedic knee care by Dr. Pulak Vatsya at StepUp Joints, Lajpat Nagar, New Delhi. Robotic knee replacement, ACL surgery, knee pain treatment.',
   keywords: ['orthopaedic surgeon', 'knee replacement', 'knee surgeon delhi', 'robotic knee replacement', 'ACL surgery', 'Dr Pulak Vatsya', 'StepUp Joints'],
   authors: [{ name: 'Dr. Pulak Vatsya' }],
   creator: 'Dr. Pulak Vatsya',
@@ -24,12 +31,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   );

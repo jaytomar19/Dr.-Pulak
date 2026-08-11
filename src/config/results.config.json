@@ -2,50 +2,57 @@
   "version": "1.0",
   "results": {
     "A": {
-      "summary": "PLACEHOLDER",
+      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band A Mild Risk Patient Summary]",
       "possible_causes": [
-        "PLACEHOLDER"
+        "[DOCTOR APPROVED COPY REQUIRED: Band A Cause 1]",
+        "[DOCTOR APPROVED COPY REQUIRED: Band A Cause 2]"
       ],
-      "next_step": "PLACEHOLDER",
+      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band A Recommended Next Step]",
       "show_ctas": true,
       "cta_options": [
-        "PLACEHOLDER"
+        "Take Free Knee Check",
+        "Book Consultation"
       ],
       "fire_internal_alert": false,
       "exclude_from_automation": false
     },
     "B": {
-      "summary": "PLACEHOLDER",
+      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band B Moderate Risk Patient Summary]",
       "possible_causes": [
-        "PLACEHOLDER"
+        "[DOCTOR APPROVED COPY REQUIRED: Band B Cause 1]",
+        "[DOCTOR APPROVED COPY REQUIRED: Band B Cause 2]"
       ],
-      "next_step": "PLACEHOLDER",
+      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band B Recommended Next Step]",
       "show_ctas": true,
       "cta_options": [
-        "PLACEHOLDER"
+        "Book OPD Visit",
+        "Book Online Video Consult"
       ],
       "fire_internal_alert": false,
       "exclude_from_automation": false
     },
     "C": {
-      "summary": "PLACEHOLDER",
+      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band C Severe Risk Patient Summary]",
       "possible_causes": [
-        "PLACEHOLDER"
+        "[DOCTOR APPROVED COPY REQUIRED: Band C Cause 1]",
+        "[DOCTOR APPROVED COPY REQUIRED: Band C Cause 2]"
       ],
-      "next_step": "PLACEHOLDER",
+      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band C Recommended Next Step]",
       "show_ctas": true,
       "cta_options": [
-        "PLACEHOLDER"
+        "Book In-Person OPD Visit",
+        "Request MRI Review"
       ],
       "fire_internal_alert": false,
       "exclude_from_automation": false
     },
     "R": {
-      "summary": "PLACEHOLDER",
+      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band R Urgent Evaluation Patient Summary]",
       "possible_causes": [
-        "PLACEHOLDER"
+        "[DOCTOR APPROVED COPY REQUIRED: Band R Urgent Cause 1]",
+        "[DOCTOR APPROVED COPY REQUIRED: Band R Urgent Cause 2]"
       ],
-      "next_step": "PLACEHOLDER",
+      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band R Immediate Clinical Evaluation Guidance]",
       "show_ctas": false,
       "cta_options": [],
       "fire_internal_alert": true,
