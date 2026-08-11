@@ -1,29 +1,48 @@
 export default function CredentialsBlock() {
+  const pillars = [
+    {
+      step: '01',
+      title: 'Patient Education First',
+      desc: 'We believe informed patients achieve better outcomes. Every consultation includes detailed visual explanations of your joint anatomy, diagnosis, and options.',
+    },
+    {
+      step: '02',
+      title: 'Conservative Non-Surgical Focus',
+      desc: 'Surgery is recommended only when conservative protocols—physiotherapy, lifestyle modification, and targeted therapies—have been thoroughly explored.',
+    },
+    {
+      step: '03',
+      title: 'Fellowship-Trained Precision',
+      desc: 'Sub-specialized surgical expertise in joint replacement and arthroscopy at StepUp Joints, Lajpat Nagar, utilizing evidence-based protocols.',
+    },
+    {
+      step: '04',
+      title: 'Transparent Ethical Guidance',
+      desc: 'Clear, honest recommendations with zero pressure. Patients receive realistic timelines, risk assessments, and recovery expectations.',
+    },
+  ];
+
   return (
-    <div className="credentials">
-      <div className="credentials__header">
-        <h2 className="credentials__name">Dr. Pulak Vatsya</h2>
-        <h3 className="credentials__title">Senior Orthopaedic Surgeon</h3>
-        <p className="credentials__clinic">StepUp Joints, Lajpat Nagar</p>
-      </div>
-      
-      <div className="credentials__stats">
-        <div className="credentials__stat-item">
-          <span className="credentials__stat-icon">🎓</span>
-          <span className="credentials__stat-value">MBBS, MS Orthopaedics</span>
-          <span className="credentials__stat-label">Fellowship in Joint Replacement</span>
+    <section className="philosophy-section">
+      <div className="container">
+        <div className="philosophy-header">
+          <span className="eyebrow">PRACTICE PHILOSOPHY</span>
+          <h2 className="philosophy-title">Patient-Centered Knee Care Founded on Clinical Integrity</h2>
+          <p className="philosophy-subtitle">
+            Providing evidence-based orthopaedic care in South Delhi with a steadfast commitment to patient education and non-surgical preservation.
+          </p>
         </div>
-        <div className="credentials__stat-item">
-          <span className="credentials__stat-icon">⏱️</span>
-          <span className="credentials__stat-value">15+ Years</span>
-          <span className="credentials__stat-label">of Experience</span>
-        </div>
-        <div className="credentials__stat-item">
-          <span className="credentials__stat-icon">📋</span>
-          <span className="credentials__stat-value">5000+</span>
-          <span className="credentials__stat-label">Surgeries Performed</span>
+
+        <div className="philosophy-grid">
+          {pillars.map((pillar, idx) => (
+            <div key={idx} className="philosophy-card">
+              <span className="philosophy-card__num">{pillar.step}</span>
+              <h3 className="philosophy-card__title">{pillar.title}</h3>
+              <p className="philosophy-card__desc">{pillar.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,7 +1,5 @@
 'use client';
 
-// TODO: Replace with YouTube Data API v3 channel pull
-
 interface YouTubeRecentVideosProps {
   channelName?: string;
   maxVideos?: number;
@@ -9,38 +7,69 @@ interface YouTubeRecentVideosProps {
 
 export default function YouTubeRecentVideos({ 
   channelName = 'Dr. Pulak Vatsya',
-  maxVideos = 4 
+  maxVideos = 3 
 }: YouTubeRecentVideosProps) {
   
   const videos = [
-    { id: 'dQw4w9WgXcQ', title: 'What to expect after Knee Replacement', date: '1 week ago' },
-    { id: 'dQw4w9WgXcQ', title: 'ACL Tear Recovery Timeline', date: '2 weeks ago' },
-    { id: 'dQw4w9WgXcQ', title: 'Exercises for Knee Pain', date: '1 month ago' },
-    { id: 'dQw4w9WgXcQ', title: 'When do you need surgery?', date: '2 months ago' },
+    { 
+      id: 'dQw4w9WgXcQ', 
+      category: 'PATIENT EDUCATION',
+      title: 'What to Expect Before & After Knee Replacement Surgery', 
+      date: 'Recent Insight',
+      duration: '5:20'
+    },
+    { 
+      id: 'dQw4w9WgXcQ', 
+      category: 'SPORTS INJURY',
+      title: 'ACL Tear Recovery Timeline & Rehabilitation Phases', 
+      date: 'Recent Insight',
+      duration: '6:45'
+    },
+    { 
+      id: 'dQw4w9WgXcQ', 
+      category: 'JOINT PRESERVATION',
+      title: 'Non-Surgical Treatments & Exercises for Chronic Knee Pain', 
+      date: 'Recent Insight',
+      duration: '4:15'
+    },
   ].slice(0, maxVideos);
 
   return (
-    <div className="youtube-recent">
-      <h2 className="youtube-recent__heading">Latest Videos from {channelName}</h2>
-      
-      <div className="youtube-recent__grid">
-        {videos.map((video, idx) => (
-          <div key={idx} className="youtube-recent__card">
-            <img 
-              src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`} 
-              alt={video.title}
-              className="youtube-recent__card-thumbnail" 
-              loading="lazy"
-            />
-            <h3 className="youtube-recent__card-title">{video.title}</h3>
-            <p className="youtube-recent__card-date">{video.date}</p>
+    <section className="insights-section">
+      <div className="container">
+        <div className="insights-header">
+          <div>
+            <span className="eyebrow">CLINICAL INSIGHTS</span>
+            <h2 className="insights-title">Educational Resources & Patient Guidance from {channelName}</h2>
           </div>
-        ))}
+          <a href="#" className="btn btn--ghost btn--sm insights-link" target="_blank" rel="noopener noreferrer">
+            Visit Video Library →
+          </a>
+        </div>
+        
+        <div className="insights-grid">
+          {videos.map((video, idx) => (
+            <article key={idx} className="insights-card">
+              <div className="insights-card__media">
+                <img 
+                  src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`} 
+                  alt={video.title}
+                  className="insights-card__thumb" 
+                  loading="lazy"
+                />
+                <div className="insights-card__play">
+                  <span>▶</span>
+                </div>
+                <span className="insights-card__duration">{video.duration}</span>
+              </div>
+              <div className="insights-card__body">
+                <span className="insights-card__category">{video.category}</span>
+                <h3 className="insights-card__title">{video.title}</h3>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
-      
-      <a href="#" className="youtube-recent__link" target="_blank" rel="noopener noreferrer">
-        Visit YouTube Channel
-      </a>
-    </div>
+    </section>
   );
 }

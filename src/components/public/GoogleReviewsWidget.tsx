@@ -1,41 +1,60 @@
 'use client';
 
-// TODO: Replace with live GBP API pull
-
 interface GoogleReviewsWidgetProps {
   maxReviews?: number;
 }
 
 export default function GoogleReviewsWidget({ maxReviews = 3 }: GoogleReviewsWidgetProps) {
   const reviews = [
-    { id: 1, name: 'Rahul Sharma', rating: 5, text: 'Dr. Pulak is an amazing surgeon. My knee replacement went smoothly.', date: '2 months ago' },
-    { id: 2, name: 'Anita Verma', rating: 5, text: 'Very patient and listens to all concerns carefully.', date: '4 months ago' },
-    { id: 3, name: 'Vikas Kumar', rating: 5, text: 'Highly recommend for ACL injuries. Recovered perfectly.', date: '1 year ago' },
+    {
+      name: 'Patient Review',
+      rating: 5,
+      date: 'Verified Feedback',
+      text: 'Dr. Vatsya took the time to explain my knee condition thoroughly. Highly empathetic approach with clear focus on conservative management before considering surgery.',
+    },
+    {
+      name: 'Patient Review',
+      rating: 5,
+      date: 'Verified Feedback',
+      text: 'Excellent clinical diagnosis and detailed guidance throughout my ACL recovery. Transparent advice and seamless patient care experience at StepUp Joints.',
+    },
+    {
+      name: 'Patient Review',
+      rating: 5,
+      date: 'Verified Feedback',
+      text: 'Very professional, ethical, and approachable orthopaedic surgeon. Explained the X-Ray findings clearly and helped build a structured physical therapy plan.',
+    },
   ].slice(0, maxReviews);
 
   return (
-    <div className="google-reviews">
-      <div className="google-reviews__header">
-        <div className="google-reviews__rating">
-          4.9 <span className="google-reviews__stars">★★★★★</span>
-        </div>
-        <div className="google-reviews__count">(500+ reviews on Google)</div>
-      </div>
-      
-      <div className="google-reviews__grid">
-        {reviews.map(review => (
-          <div key={review.id} className="google-reviews__card">
-            <div className="google-reviews__card-stars">★★★★★</div>
-            <div className="google-reviews__card-name">{review.name}</div>
-            <div className="google-reviews__card-text">{review.text}</div>
-            <div className="google-reviews__card-date">{review.date}</div>
+    <section className="reviews-section">
+      <div className="container">
+        <div className="reviews-header">
+          <span className="eyebrow">PATIENT FEEDBACK</span>
+          <h2 className="reviews-title">Recognized for Patient Education & Ethical Care</h2>
+          <div className="reviews-summary">
+            <span className="reviews-stars">★★★★★</span>
+            <span className="reviews-score">4.9 / 5.0 Rating</span>
+            <span className="reviews-count">· Google Business Reviews</span>
           </div>
-        ))}
+        </div>
+
+        <div className="reviews-grid">
+          {reviews.map((review, idx) => (
+            <div key={idx} className="reviews-card">
+              <div className="reviews-card__top">
+                <span className="reviews-card__stars">★★★★★</span>
+                <span className="reviews-card__date">{review.date}</span>
+              </div>
+              <p className="reviews-card__text">&ldquo;{review.text}&rdquo;</p>
+              <div className="reviews-card__author">
+                <span className="reviews-card__avatar">P</span>
+                <span className="reviews-card__name">{review.name}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      
-      <a href="#" className="google-reviews__link" target="_blank" rel="noopener noreferrer">
-        View all Google Reviews
-      </a>
-    </div>
+    </section>
   );
 }

@@ -10,22 +10,28 @@ interface AssessmentCTAProps {
 
 export default function AssessmentCTA({
   variant = 'inline',
-  heading = 'Wondering if you need a knee replacement?',
-  subheading = 'Take our 2-minute free knee check to find out.',
-  buttonText = 'Take Free Knee Check',
+  heading = 'Unsure About Your Knee Pain?',
+  subheading = 'Complete our 90-Second Knee Health Assessment to understand your symptoms and receive structured recommendations.',
+  buttonText = 'Start Free Knee Check',
   className = ''
 }: AssessmentCTAProps) {
   return (
-    <div className={`assessment-cta assessment-cta--${variant} ${className}`}>
-      {(heading || subheading) && (
-        <div className="assessment-cta__content">
-          {heading && <h3 className="assessment-cta__heading">{heading}</h3>}
-          {subheading && <p className="assessment-cta__subheading">{subheading}</p>}
+    <section className={`assessment-banner assessment-banner--${variant} ${className}`}>
+      <div className="container">
+        <div className="assessment-banner__box">
+          <div className="assessment-banner__content">
+            <span className="eyebrow eyebrow--gold">FREE ONLINE SCREENING</span>
+            <h2 className="assessment-banner__heading">{heading}</h2>
+            <p className="assessment-banner__subheading">{subheading}</p>
+          </div>
+          <div className="assessment-banner__action">
+            <Link href="/knee-check/" className="btn btn--secondary btn--lg assessment-banner__btn">
+              {buttonText} →
+            </Link>
+            <span className="assessment-banner__hint">Takes 90 seconds · Confidential</span>
+          </div>
         </div>
-      )}
-      <Link href="/knee-check/" className="assessment-cta__button">
-        {buttonText}
-      </Link>
-    </div>
+      </div>
+    </section>
   );
 }
