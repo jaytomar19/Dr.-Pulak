@@ -5,6 +5,7 @@ import { encryptLeadPII, decryptLeadPII } from '@/lib/encryption';
 import { CreateLeadSchema } from '@/lib/validators';
 import { auth } from '@/lib/auth';
 import { LeadStatus, Prisma } from '@prisma/client';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 function getClientIp(req: NextRequest): string {
   return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
@@ -14,6 +15,11 @@ function getClientIp(req: NextRequest): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const rateCheck = checkRateLimit(req, 'create-lead', 5, 60 * 1000);
+    if (!rateCheck.isAllowed && rateCheck.response) {
+      return rateCheck.response;
+    }
+
     const body = await req.json().catch(() => null);
     const parsedBody = CreateLeadSchema.safeParse(body);
     if (!parsedBody.success) {

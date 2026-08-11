@@ -58,6 +58,14 @@ export const AdminUserCreateSchema = z.object({
 });
 export type AdminUserCreate = z.infer<typeof AdminUserCreateSchema>;
 
+export const AdminUserUpdateSchema = z.object({
+  name: z.string().min(2).optional(),
+  role: z.enum(['doctor', 'admin', 'staff']).optional(),
+  is_active: z.boolean().optional(),
+});
+export type AdminUserUpdate = z.infer<typeof AdminUserUpdateSchema>;
+
+
 export const LeadStatusUpdateSchema = z.object({
   lead_status: z.enum([
     'New', 'Contacted', 'Interested', 'Booked', 'Converted',
@@ -66,3 +74,20 @@ export const LeadStatusUpdateSchema = z.object({
   notes: z.string().optional(),
 });
 export type LeadStatusUpdate = z.infer<typeof LeadStatusUpdateSchema>;
+
+export const BookingStatusUpdateSchema = z.object({
+  status: z.enum(['confirmed', 'completed', 'no_show', 'cancelled', 'rescheduled']).optional(),
+  payment_status: z.enum(['pending', 'paid', 'refunded']).optional(),
+  payment_provider_ref: z.string().optional(),
+});
+export type BookingStatusUpdate = z.infer<typeof BookingStatusUpdateSchema>;
+
+export const CreatePublicBookingSchema = z.object({
+  lead_id: z.string().uuid(),
+  product: z.enum(['opd', 'online_live', 'imaging_review', 'second_opinion']),
+  slot_datetime: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid ISO 8601 date string for slot_datetime',
+  }),
+});
+export type CreatePublicBooking = z.infer<typeof CreatePublicBookingSchema>;
+

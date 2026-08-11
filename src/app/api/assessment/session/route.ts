@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { ASSESSMENT_SESSION_COOKIE } from '@/lib/assessment';
 import { CreateSessionSchema } from '@/lib/validators';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
+    const rateCheck = checkRateLimit(req, 'assessment-session', 10, 60 * 1000);
+    if (!rateCheck.isAllowed && rateCheck.response) {
+      return rateCheck.response;
+    }
+
     const body = await req.json().catch(() => null);
     const parsedBody = CreateSessionSchema.safeParse(body);
 
@@ -34,6 +40,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   return NextResponse.json({ error: 'Method Not Allowed' }, { status: 405 });
 }

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SessionProvider, signOut } from 'next-auth/react';
+import { SessionProvider, signOut, useSession } from 'next-auth/react';
 import '@/styles/admin.css';
 
 function AdminSidebar({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val: boolean) => void }) {
@@ -50,6 +50,7 @@ function AdminSidebar({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val:
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const isLoginPage = pathname === '/admin/login';
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -65,7 +66,9 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         <header className="admin-header">
           <button className="hamburger" onClick={() => setSidebarOpen(true)}>☰</button>
           <div className="header-right">
-            <span className="user-info">Dr. Pulak</span>
+            <span className="user-info">
+              {session?.user?.name || 'Admin'} <span className="badge badge--neutral" style={{ textTransform: 'capitalize', marginLeft: '0.5rem' }}>{session?.user?.role || 'Staff'}</span>
+            </span>
             <button className="logout-btn" onClick={() => signOut()}>Logout</button>
           </div>
         </header>

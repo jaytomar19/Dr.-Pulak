@@ -3,6 +3,7 @@ import prisma from '@/lib/db';
 import { ASSESSMENT_SESSION_COOKIE, assessmentQuestions, isAssessmentSessionAuthorized, type AssessmentAnswers } from '@/lib/assessment';
 import { scoreAssessment } from '@/lib/scoring';
 import { ScoreRequestSchema } from '@/lib/validators';
+import { sendBandRAlert } from '@/lib/notifications';
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,18 +42,17 @@ export async function POST(req: NextRequest) {
       data: { band_result: score.band, flags: score.flags, completed_at: new Date() },
     });
 
-    // Band R internal alert — spec §5.2 / results.config.json: fire_internal_alert: true
-    // Band R leads are also excluded from all automation sequences (exclude_from_automation: true).
+    // Band R urgent internal alert (fire-and-forget — does NOT delay patient response)
     if (score.band === 'R') {
-      // TODO (Phase 4): Replace this server-side log with a real internal notification
-      // (e.g. transactional email to the doctor, WhatsApp BSP message) once the delivery
-      // integration is configured. The actual channel is defined by the EMAIL_PROVIDER /
-      // WHATSAPP_BSP_PROVIDER env vars — do NOT invent credentials here.
-      // HARD CONSTRAINT: Never include name/phone/email/raw answers in alert payload.
-      console.error(
-        '[BAND_R_ALERT] High-priority assessment result requires immediate clinical review. session_id=%s flags=%s',
-        sessionId,
-        Array.isArray(score.flags) ? score.flags.join(',') : String(score.flags),
+      const flags = Array.isArray(score.flags)
+        ? (score.flags as string[])
+        : typeof score.flags === 'string'
+          ? [score.flags]
+          : [];
+
+      // Non-blocking — we don't await so the patient response is instant
+      void sendBandRAlert(sessionId, flags, session.lead_id).catch((err) =>
+        console.error('[BAND_R_ALERT] Notification dispatch error:', err)
       );
     }
 
