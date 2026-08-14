@@ -17,10 +17,10 @@ export const UpdateSessionSchema = z.object({
 export type UpdateSession = z.infer<typeof UpdateSessionSchema>;
 
 export const CreateLeadSchema = z.object({
-  session_id: z.string().uuid(),
+  session_id: z.string().uuid().optional(),
   name: z.string().trim().min(2, 'Name must be at least 2 characters').max(120),
-  phone: z.string().regex(/^(?:\+91|91)?[6789]\d{9}$/, 'Invalid Indian mobile number'),
-  email: z.string().email('Invalid email address'),
+  phone: z.string().regex(/^(?:\+91|91)?[6789]\d{9}$/, 'Please enter a valid 10-digit Indian mobile number'),
+  email: z.string().email('Please enter a valid email address with a domain (e.g., name@gmail.com)'),
   consent_service: z.literal(true, {
     errorMap: () => ({ message: 'Service consent is required to continue' }),
   }),

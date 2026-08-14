@@ -23,20 +23,26 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const parsedBody = CreateLeadSchema.safeParse(body);
     if (!parsedBody.success) {
-      return NextResponse.json({ error: 'Invalid contact details' }, { status: 400 });
+      const errorMsg = parsedBody.error.errors[0]?.message || 'Invalid contact details';
+      return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
     const data = parsedBody.data;
-    if (!isAssessmentSessionAuthorized(req.cookies.get(ASSESSMENT_SESSION_COOKIE)?.value, data.session_id)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    let sessionSource: string | null = null;
 
-    const session = await prisma.assessment_sessions.findUnique({
-      where: { session_id: data.session_id },
-      select: { session_id: true, lead_id: true, campaign_source: true },
-    });
-    if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 });
-    if (session.lead_id) return NextResponse.json({ error: 'Contact details have already been submitted' }, { status: 409 });
+    if (data.session_id) {
+      if (!isAssessmentSessionAuthorized(req.cookies.get(ASSESSMENT_SESSION_COOKIE)?.value, data.session_id)) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+
+      const session = await prisma.assessment_sessions.findUnique({
+        where: { session_id: data.session_id },
+        select: { session_id: true, lead_id: true, campaign_source: true },
+      });
+      if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 });
+      if (session.lead_id) return NextResponse.json({ error: 'Contact details have already been submitted' }, { status: 409 });
+      sessionSource = session.campaign_source;
+    }
 
     const encryptedPii = encryptLeadPII({ phone: data.phone, email: data.email });
     const clientIp = getClientIp(req);
@@ -47,16 +53,18 @@ export async function POST(req: NextRequest) {
           name: data.name,
           phone: encryptedPii.phone,
           email: encryptedPii.email,
-          session_id: session.session_id,
-          source: session.campaign_source,
+          session_id: data.session_id || null,
+          source: sessionSource || 'Direct Booking',
         },
         select: { lead_id: true },
       });
 
-      await tx.assessment_sessions.update({
-        where: { session_id: session.session_id },
-        data: { lead_id: createdLead.lead_id },
-      });
+      if (data.session_id) {
+        await tx.assessment_sessions.update({
+          where: { session_id: data.session_id },
+          data: { lead_id: createdLead.lead_id },
+        });
+      }
 
       await tx.consent_records.createMany({
         data: [

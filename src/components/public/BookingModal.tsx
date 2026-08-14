@@ -55,8 +55,9 @@ export default function BookingModal({
         throw new Error('Please enter a valid 10-digit mobile number.');
       }
 
-      if (!email.trim() || !email.includes('@')) {
-        throw new Error('Please enter a valid email address.');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.trim() || !emailRegex.test(email.trim())) {
+        throw new Error('Please enter a valid email address with domain extension (e.g. jaysinghtomar1077@gmail.com).');
       }
 
       // 1. Create Lead
