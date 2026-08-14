@@ -56,8 +56,8 @@ export default function BookingModal({
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email.trim() || !emailRegex.test(email.trim())) {
-        throw new Error('Please enter a valid email address with domain extension (e.g. jaysinghtomar1077@gmail.com).');
+      if (email.trim() && !emailRegex.test(email.trim())) {
+        throw new Error('Please enter a valid email address (e.g. name@example.com) or leave it empty.');
       }
 
       // 1. Create Lead
@@ -186,13 +186,12 @@ export default function BookingModal({
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>Email Address</label>
+                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>Email Address (Optional)</label>
                   <input
                     type="email"
-                    placeholder="name@example.com"
+                    placeholder="name@example.com (Optional)"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--color-border)', fontSize: '0.95rem' }}
                   />
                 </div>
