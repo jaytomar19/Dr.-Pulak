@@ -144,7 +144,13 @@ export default function AssessmentPage() {
       // GA4: assessment_question_complete — question_number only, no answer value or clinical content
       trackQuestionComplete(question.order);
 
-      setScreen(question.order === 8 ? 'contact_capture' : screenForProgress(question.order + 1));
+      if (question.order === 8) {
+        setScreen('contact_capture');
+      } else if (question.order === 9) {
+        await loadResult(sessionId);
+      } else {
+        setScreen(screenForProgress(question.order + 1));
+      }
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'Unable to save your response');
     } finally {
@@ -197,20 +203,21 @@ export default function AssessmentPage() {
     if (currentIndex > 0) setScreen(screens[currentIndex - 1]);
   };
 
-  const loadResult = async () => {
-    if (!sessionId) return;
+  const loadResult = async (overrideSessionId?: string) => {
+    const targetSessionId = overrideSessionId || sessionId;
+    if (!targetSessionId) return;
     setError(null);
     setIsLoading(true);
     try {
       const scoreResponse = await fetch('/api/assessment/score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId }),
+        body: JSON.stringify({ session_id: targetSessionId }),
       });
       const scoreData = await scoreResponse.json();
       if (!scoreResponse.ok) throw new Error(scoreData.error ?? 'Unable to complete the assessment');
 
-      const resultResponse = await fetch(`/api/assessment/result/${sessionId}`);
+      const resultResponse = await fetch(`/api/assessment/result/${targetSessionId}`);
       const resultData = await resultResponse.json();
       if (!resultResponse.ok) throw new Error(resultData.error ?? 'Unable to load your result');
 
@@ -308,7 +315,7 @@ export default function AssessmentPage() {
             <p>Your responses are ready to be processed using the configured assessment rules.</p>
             <div className="assessment-actions">
               <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading} data-cursor="button">Back</button>
-              <button className="assessment-button" type="button" onClick={loadResult} disabled={isLoading} data-cursor="button">
+              <button className="assessment-button" type="button" onClick={() => loadResult()} disabled={isLoading} data-cursor="button">
                 {isLoading ? (
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                     <Loader size="sm" color="white" />
