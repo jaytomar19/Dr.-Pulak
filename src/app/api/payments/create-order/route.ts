@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     const amountPaise = PRODUCT_PRICES_PAISE[booking.product] || 100000;
     const receipt = `rcpt_${booking.booking_id.substring(0, 8)}`;
 
-    let patientName = booking.lead.name;
+    const patientName = booking.lead.name;
     let patientPhone = '';
     let patientEmail = '';
 

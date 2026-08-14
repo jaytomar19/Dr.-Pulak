@@ -16,6 +16,7 @@
 
 import prisma from '@/lib/db';
 import { DeliveryChannel, DeliveryStatus } from '@prisma/client';
+import { decryptLeadPII } from '@/lib/encryption';
 
 export type NotificationChannel = 'email' | 'whatsapp';
 
@@ -30,6 +31,7 @@ export interface WhatsAppPayload {
   to: string;
   template_name: string;
   template_params?: Record<string, string>;
+  message_text?: string;
 }
 
 export type NotificationResult =
@@ -82,20 +84,96 @@ async function sendEmailPostmark(payload: EmailPayload): Promise<NotificationRes
 
 async function sendWhatsApp(payload: WhatsAppPayload): Promise<NotificationResult> {
   const apiKey = process.env.WHATSAPP_API_KEY;
-  const provider = process.env.WHATSAPP_BSP_PROVIDER || 'aisensy';
+  const provider = (process.env.WHATSAPP_BSP_PROVIDER || 'meta').toLowerCase();
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
   if (!apiKey) {
-    console.warn('[NOTIF] WHATSAPP_API_KEY is not configured. WhatsApp not sent.');
-    return { success: false, error: 'WhatsApp provider not configured' };
+    console.log('[NOTIF] [STUB] WHATSAPP_API_KEY is unconfigured. WhatsApp notification logged in stub mode:', {
+      provider,
+      recipient: payload.to,
+      template: payload.template_name,
+      params_count: Object.keys(payload.template_params || {}).length,
+    });
+    return { success: false, error: 'WhatsApp provider credentials not configured (development stub mode)' };
   }
 
-  // Provider adapter: extend here when integrating Aisensy/Interakt/Wati
-  console.warn(`[NOTIF] WhatsApp provider "${provider}" interface stub. Payload queued:`, {
-    template: payload.template_name,
-    params_count: Object.keys(payload.template_params || {}).length,
-  });
+  try {
+    // 1. Meta Cloud API (Official WhatsApp Business API)
+    if (provider === 'meta' || provider === 'facebook') {
+      if (!phoneNumberId) {
+        console.error('[NOTIF] WHATSAPP_PHONE_NUMBER_ID is required for Meta Cloud API.');
+        return { success: false, error: 'WHATSAPP_PHONE_NUMBER_ID required for Meta Cloud API' };
+      }
 
-  return { success: false, error: `WhatsApp provider "${provider}" integration pending` };
+      const formattedTo = payload.to.replace(/\D/g, '');
+      const paramValues = Object.values(payload.template_params || {});
+      const components = paramValues.length > 0 ? [
+        {
+          type: 'body',
+          parameters: paramValues.map((v) => ({ type: 'text', text: v })),
+        },
+      ] : [];
+
+      const res = await fetch(`https://graph.facebook.com/v18.0/${phoneNumberId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messaging_product: 'whatsapp',
+          to: formattedTo,
+          type: 'template',
+          template: {
+            name: payload.template_name,
+            language: { code: process.env.WHATSAPP_TEMPLATE_LANGUAGE || 'en' },
+            components,
+          },
+        }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('[NOTIF] Meta WhatsApp API error:', errText);
+        return { success: false, error: `Meta WhatsApp API error (${res.status}): ${errText}` };
+      }
+
+      const data = await res.json();
+      const messageId = data.messages?.[0]?.id;
+      return { success: true, provider_message_id: messageId };
+    }
+
+    // 2. Aisensy BSP Provider
+    if (provider === 'aisensy') {
+      const res = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKey,
+          campaignName: payload.template_name,
+          destination: payload.to.replace(/\D/g, ''),
+          templateParams: Object.values(payload.template_params || {}),
+        }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('[NOTIF] Aisensy WhatsApp API error:', errText);
+        return { success: false, error: `Aisensy API error (${res.status}): ${errText}` };
+      }
+
+      const data = await res.json();
+      return { success: true, provider_message_id: data.msgId };
+    }
+
+    // 3. Fallback / Custom Webhook provider
+    console.warn(`[NOTIF] Unsupported WhatsApp BSP provider "${provider}". Message stubbed.`);
+    return { success: false, error: `Unsupported WhatsApp BSP provider "${provider}"` };
+
+  } catch (err) {
+    console.error('[NOTIF] WhatsApp dispatch exception:', err);
+    return { success: false, error: 'WhatsApp dispatch exception' };
+  }
 }
 
 // ─── Delivery Log ─────────────────────────────────────────────────────────────
@@ -293,6 +371,127 @@ export async function sendNewLeadNotificationToStaff(
 
   const status = result.success ? DeliveryStatus.sent : DeliveryStatus.failed;
   await logDelivery(lead_id, DeliveryChannel.email, 'new_lead_notification', status);
+}
+
+/**
+ * Transactional WhatsApp notification sent to the clinic/doctor when a booking & payment is confirmed.
+ * Checks delivery_log to maintain strict idempotency (prevents duplicate WhatsApp alerts).
+ */
+export async function sendWhatsAppBookingConfirmationToClinic(bookingId: string): Promise<void> {
+  try {
+    // 1. Fetch booking with linked lead and payments
+    const booking = await prisma.bookings.findUnique({
+      where: { booking_id: bookingId },
+      include: {
+        lead: {
+          select: {
+            lead_id: true,
+            name: true,
+            phone: true,
+            email: true,
+          },
+        },
+        payments: {
+          where: { status: 'PAID' },
+          orderBy: { updated_at: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    if (!booking || !booking.lead) {
+      console.warn(`[NOTIF_WA] Booking ${bookingId} not found or missing lead record.`);
+      return;
+    }
+
+    // 2. Idempotency Check: Verify WhatsApp alert was not already sent for this booking
+    const existingLog = await prisma.delivery_log.findFirst({
+      where: {
+        lead_id: booking.lead_id,
+        channel: DeliveryChannel.whatsapp,
+        template_name: 'clinic_booking_whatsapp_alert',
+        status: DeliveryStatus.sent,
+      },
+    });
+
+    if (existingLog) {
+      console.log(`[NOTIF_WA] WhatsApp notification already sent for lead ${booking.lead_id} (Booking ${bookingId}). Skipping duplicate.`);
+      return;
+    }
+
+    // 3. Decrypt patient PII safely
+    let patientPhone = 'N/A';
+    let patientEmail = 'N/A';
+    try {
+      const decrypted = decryptLeadPII({ phone: booking.lead.phone, email: booking.lead.email });
+      patientPhone = decrypted.phone || 'N/A';
+      patientEmail = decrypted.email || 'N/A';
+    } catch {
+      patientPhone = booking.lead.phone || 'N/A';
+      patientEmail = booking.lead.email || 'N/A';
+    }
+
+    const productLabels: Record<string, string> = {
+      opd: 'In-Person OPD Consultation',
+      online_live: 'Online Video Consult',
+      imaging_review: 'Imaging & MRI Review',
+      second_opinion: 'Surgical Second Opinion',
+    };
+
+    const recipientNumber = process.env.WHATSAPP_RECIPIENT_NUMBER || process.env.CLINIC_WHATSAPP_NUMBER || '+919876543210';
+    const templateName = process.env.WHATSAPP_TEMPLATE_NAME || 'clinic_booking_alert';
+    const paidPayment = booking.payments[0];
+    const amountINR = paidPayment ? (paidPayment.amount_paise / 100).toFixed(0) : '1000';
+    const paymentId = paidPayment?.razorpay_payment_id || 'N/A';
+    const orderId = paidPayment?.razorpay_order_id || booking.payment_provider_ref || 'N/A';
+    const slotDateStr = new Date(booking.slot_datetime).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
+    const slotTimeStr = new Date(booking.slot_datetime).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
+
+    const templateParams = {
+      patient_name: booking.lead.name,
+      patient_phone: patientPhone,
+      patient_email: patientEmail,
+      consultation_type: productLabels[booking.product] || booking.product,
+      appointment_date: slotDateStr,
+      appointment_time: slotTimeStr,
+      amount: `₹${amountINR}`,
+      payment_id: paymentId,
+      order_id: orderId,
+    };
+
+    const textMessage = [
+      '🩺 *NEW CONFIRMED CONSULTATION BOOKING*',
+      'Clinic: Step Up Joints | Dr. Pulak Vatsya',
+      '',
+      `👤 *Patient Name:* ${booking.lead.name}`,
+      `📞 *Phone:* ${patientPhone}`,
+      `✉️ *Email:* ${patientEmail}`,
+      `🩺 *Consultation:* ${productLabels[booking.product] || booking.product}`,
+      `📅 *Date:* ${slotDateStr}`,
+      `⏰ *Time:* ${slotTimeStr}`,
+      `💳 *Payment:* Paid (₹${amountINR})`,
+      `🆔 *Razorpay Payment ID:* ${paymentId}`,
+      `🔖 *Razorpay Order ID:* ${orderId}`,
+      '',
+      'Please check the admin dashboard for complete details.',
+    ].join('\n');
+
+    // 4. Send WhatsApp Notification
+    const result = await sendWhatsApp({
+      to: recipientNumber,
+      template_name: templateName,
+      template_params: templateParams,
+      message_text: textMessage,
+    });
+
+    const status = result.success ? DeliveryStatus.sent : DeliveryStatus.failed;
+
+    // 5. Record Delivery Log
+    await logDelivery(booking.lead_id, DeliveryChannel.whatsapp, 'clinic_booking_whatsapp_alert', status);
+
+  } catch (err) {
+    console.error('[NOTIF_WA] WhatsApp notification dispatch exception:', err);
+  }
 }
 
 // Export provider utilities for testing

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { verifyRazorpayWebhookSignature } from '@/lib/razorpay';
-import { sendPaymentConfirmedToStaff } from '@/lib/notifications';
+import { sendPaymentConfirmedToStaff, sendWhatsAppBookingConfirmationToClinic } from '@/lib/notifications';
 
 export async function POST(req: NextRequest) {
   try {
@@ -86,14 +86,17 @@ export async function POST(req: NextRequest) {
             });
           });
 
-          // Non-blocking notification dispatch
+          // Non-blocking notification dispatches (Email + WhatsApp)
           const amount = paymentEntity?.amount || 0;
           void sendPaymentConfirmedToStaff(
             booking.lead_id,
             booking.booking_id,
             booking.product,
             amount
-          ).catch((err) => console.error('[NOTIF] Payment confirmation dispatch failed:', err));
+          ).catch((err) => console.error('[NOTIF] Payment confirmation email dispatch failed:', err));
+
+          void sendWhatsAppBookingConfirmationToClinic(booking.booking_id)
+            .catch((err) => console.error('[NOTIF] WhatsApp clinic alert dispatch failed:', err));
         }
       }
     }

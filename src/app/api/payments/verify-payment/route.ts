@@ -3,7 +3,7 @@ import prisma from '@/lib/db';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { verifyRazorpayPaymentSignature } from '@/lib/razorpay';
 import { VerifyPaymentSchema } from '@/lib/validators';
-import { sendPaymentConfirmedToStaff } from '@/lib/notifications';
+import { sendPaymentConfirmedToStaff, sendWhatsAppBookingConfirmationToClinic } from '@/lib/notifications';
 
 export async function POST(req: NextRequest) {
   try {
@@ -130,13 +130,16 @@ export async function POST(req: NextRequest) {
       });
     });
 
-    // 5. Non-blocking staff notification
+    // 5. Non-blocking staff notifications (Email + WhatsApp)
     void sendPaymentConfirmedToStaff(
       booking.lead_id,
       booking.booking_id,
       booking.product,
       100000
-    ).catch((err) => console.error('[NOTIF] Payment verification notification dispatch failed:', err));
+    ).catch((err) => console.error('[NOTIF] Payment verification email dispatch failed:', err));
+
+    void sendWhatsAppBookingConfirmationToClinic(booking.booking_id)
+      .catch((err) => console.error('[NOTIF] WhatsApp clinic alert dispatch failed:', err));
 
     return NextResponse.json({
       success: true,
