@@ -157,7 +157,8 @@ export default function AssessmentPage() {
     if (!sessionId) return;
     setError(null);
     setIsLoading(true);
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     try {
       const response = await fetch('/api/leads', {
@@ -181,7 +182,7 @@ export default function AssessmentPage() {
 
       setHasContact(true);
       saveSession(sessionId, answers, true);
-      event.currentTarget.reset();
+      form?.reset();
       setScreen('q9');
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'Unable to save your contact details');

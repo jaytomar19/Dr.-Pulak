@@ -2,57 +2,57 @@
   "version": "1.0",
   "results": {
     "A": {
-      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band A Mild Risk Patient Summary]",
+      "summary": "Your responses indicate mild joint strain or early wear with a low indication for surgical intervention. Conservative management, guided physiotherapy, and targeted exercise are typically recommended.",
       "possible_causes": [
-        "[DOCTOR APPROVED COPY REQUIRED: Band A Cause 1]",
-        "[DOCTOR APPROVED COPY REQUIRED: Band A Cause 2]"
+        "Mild muscle strain or patellofemoral tracking stress",
+        "Early non-structural joint inflammation or overuse"
       ],
-      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band A Recommended Next Step]",
+      "next_step": "Maintain active joint strengthening and monitor your symptoms. If pain increases during activities, schedule an OPD evaluation.",
       "show_ctas": true,
       "cta_options": [
-        "Take Free Knee Check",
-        "Book Consultation"
+        "Book In-Person OPD Consultation",
+        "Book Online Video Consultation"
       ],
       "fire_internal_alert": false,
       "exclude_from_automation": false
     },
     "B": {
-      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band B Moderate Risk Patient Summary]",
+      "summary": "Your responses indicate moderate knee joint symptoms that warrant formal clinical and diagnostic evaluation. Further radiological assessment (X-ray or MRI) will clarify joint space and soft tissue health.",
       "possible_causes": [
-        "[DOCTOR APPROVED COPY REQUIRED: Band B Cause 1]",
-        "[DOCTOR APPROVED COPY REQUIRED: Band B Cause 2]"
+        "Moderate cartilage wear or early osteoarthritis",
+        "Meniscal tear or ligamentous instability"
       ],
-      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band B Recommended Next Step]",
+      "next_step": "A specialized clinical examination and diagnostic imaging review with Dr. Pulak Vatsya is recommended to prevent progressive joint damage.",
       "show_ctas": true,
       "cta_options": [
-        "Book OPD Visit",
-        "Book Online Video Consult"
+        "Book In-Person OPD Consultation",
+        "Book Online Video Consultation"
       ],
       "fire_internal_alert": false,
       "exclude_from_automation": false
     },
     "C": {
-      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band C Severe Risk Patient Summary]",
+      "summary": "Your responses indicate significant joint impairment and high symptom severity. A comprehensive orthopaedic evaluation is strongly recommended to explore joint preservation or surgical treatment pathways.",
       "possible_causes": [
-        "[DOCTOR APPROVED COPY REQUIRED: Band C Cause 1]",
-        "[DOCTOR APPROVED COPY REQUIRED: Band C Cause 2]"
+        "Advanced knee osteoarthritis / severe cartilage breakdown",
+        "Significant structural ligament damage or chronic joint instability"
       ],
-      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band C Recommended Next Step]",
+      "next_step": "Schedule a priority consultation with Dr. Pulak Vatsya to review MRI/X-ray scans and discuss non-surgical and advanced surgical options.",
       "show_ctas": true,
       "cta_options": [
-        "Book In-Person OPD Visit",
-        "Request MRI Review"
+        "Book In-Person OPD Consultation",
+        "Book Online Video Consultation"
       ],
       "fire_internal_alert": false,
       "exclude_from_automation": false
     },
     "R": {
-      "summary": "[DOCTOR APPROVED COPY REQUIRED: Band R Urgent Evaluation Patient Summary]",
+      "summary": "CRITICAL MEDICAL SAFETY ALERT: Your reported symptoms include acute red-flag criteria (such as mechanical joint locking, inability to bear weight, or joint swelling accompanied by fever).",
       "possible_causes": [
-        "[DOCTOR APPROVED COPY REQUIRED: Band R Urgent Cause 1]",
-        "[DOCTOR APPROVED COPY REQUIRED: Band R Urgent Cause 2]"
+        "Acute mechanical joint blockage or displaced meniscal bucket-handle tear",
+        "Possible acute septic arthritis, severe trauma, or major ligament rupture"
       ],
-      "next_step": "[DOCTOR APPROVED COPY REQUIRED: Band R Immediate Clinical Evaluation Guidance]",
+      "next_step": "Immediate clinical evaluation at an orthopaedic clinic or emergency facility is required. Do not force movement on a locked or non-weight-bearing knee.",
       "show_ctas": false,
       "cta_options": [],
       "fire_internal_alert": true,

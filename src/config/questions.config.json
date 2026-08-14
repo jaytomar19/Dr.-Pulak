@@ -5,81 +5,108 @@
       "id": "q1",
       "order": 1,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "How would you rate the severity of your knee pain during daily activities?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "Mild or no pain — occasional slight discomfort", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Moderate pain — uncomfortable during walking or standing", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Severe pain — significantly limits daily movement", "points": 6, "flags": [] },
+        { "value": "opt_d", "label": "Extreme / constant pain — present even at rest or night", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q2",
       "order": 2,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "Do you experience swelling or stiffness in your knee joint?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "No swelling or stiffness", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Mild stiffness in the morning or after resting", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Frequent swelling after walking or physical activity", "points": 6, "flags": [] },
+        { "value": "opt_d", "label": "Persistent heavy swelling and severe morning stiffness", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q3",
       "order": 3,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "Does your knee ever feel unstable, buckle, or 'give way' under your weight?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "Never — joint feels completely stable", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Rarely — only during sudden pivots or sports", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Frequently — gives way during normal walking", "points": 7, "flags": [] },
+        { "value": "opt_d", "label": "Constantly — knee feels unsafe to bear weight", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q4",
       "order": 4,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "Does your knee catch, lock, or prevent you from fully straightening your leg?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "No mechanical catching or locking", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Occasional clicking or popping without pain", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Painful clicking or temporary catching", "points": 7, "flags": [] },
+        { "value": "opt_d", "label": "Knee locks completely and cannot be fully straightened", "points": 10, "flags": ["RED_FLAG_LOCKING"] }
       ]
     },
     {
       "id": "q5",
       "order": 5,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "How difficult is it for you to climb or descend stairs?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "No difficulty — can climb stairs normally", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Slight difficulty — require handrail support", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Moderate difficulty — take stairs one step at a time", "points": 6, "flags": [] },
+        { "value": "opt_d", "label": "Severe difficulty — unable to use stairs without assistance", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q6",
       "order": 6,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "How far can you walk before knee pain forces you to stop?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "Unlimited — can walk more than 1–2 kilometres easily", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Can walk 10–15 minutes before pain starts", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Can walk only short distances (around house / 5 mins)", "points": 6, "flags": [] },
+        { "value": "opt_d", "label": "Unable to walk or require crutches / support", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q7",
       "order": 7,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "How long have you been experiencing these knee symptoms?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "Less than 2 weeks", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "2 weeks to 3 months", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "3 months to 1 year", "points": 6, "flags": [] },
+        { "value": "opt_d", "label": "More than 1 year (chronic condition)", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q8",
       "order": 8,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "Have previous non-surgical treatments (medications, physiotherapy, injections) helped your knee?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "Symptoms resolved or improved significantly", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Temporary relief only — pain returns quickly", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Minimal improvement despite physiotherapy & medications", "points": 6, "flags": [] },
+        { "value": "opt_d", "label": "No relief — non-surgical treatments no longer help", "points": 10, "flags": [] }
       ]
     },
     {
       "id": "q9",
       "order": 9,
       "type": "single_select",
-      "prompt": "PLACEHOLDER",
+      "prompt": "Do you have any of the following acute symptoms or recent injury history?",
       "options": [
-        { "value": "PLACEHOLDER_A", "label": "PLACEHOLDER", "points": 0, "flags": ["PLACEHOLDER"] }
+        { "value": "opt_a", "label": "None of the below — gradual age or wear related pain", "points": 0, "flags": [] },
+        { "value": "opt_b", "label": "Mild discomfort after long standing or exertion", "points": 3, "flags": [] },
+        { "value": "opt_c", "label": "Recent sports injury / sudden pop felt in knee", "points": 7, "flags": [] },
+        { "value": "opt_d", "label": "Inability to put any weight on leg OR swollen knee with high fever", "points": 10, "flags": ["RED_FLAG_WEIGHT_FEVER"] }
       ]
     }
   ]
