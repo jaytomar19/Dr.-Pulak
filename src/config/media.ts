@@ -92,7 +92,7 @@ export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boo
     {
       id: 'yt-3',
       videoId: '40SASS3OaY8',
-      title: 'Advanced Robotic Knee Surgery & Precision Recovery',
+      title: 'Knee Replacement',
       youtubeUrl: 'https://youtu.be/40SASS3OaY8',
       category: 'Robotic Surgery',
       isFeatured: true,
