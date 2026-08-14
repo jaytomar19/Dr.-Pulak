@@ -6,6 +6,7 @@ import { auth } from '@/lib/auth';
 import { enforceRole } from '@/lib/rbac';
 import { BookingStatus, PaymentStatus, ProductType, Prisma } from '@prisma/client';
 import { sendBookingConfirmationToStaff } from '@/lib/notifications';
+import { decryptLeadPII } from '@/lib/encryption';
 
 export async function POST(req: NextRequest) {
   try {
@@ -125,7 +126,7 @@ export async function GET(req: NextRequest) {
     }
 
     const total = await prisma.bookings.count({ where });
-    const bookings = await prisma.bookings.findMany({
+    const rawBookings = await prisma.bookings.findMany({
       where,
       orderBy: { slot_datetime: 'asc' },
       skip: (page - 1) * limit,
@@ -135,6 +136,8 @@ export async function GET(req: NextRequest) {
           select: {
             lead_id: true,
             name: true,
+            phone: true,
+            email: true,
             lead_status: true,
             created_at: true,
           },
@@ -153,6 +156,27 @@ export async function GET(req: NextRequest) {
           take: 1,
         },
       },
+    });
+
+    const bookings = rawBookings.map((b) => {
+      let phone = b.lead?.phone || '';
+      let email = b.lead?.email || '';
+      try {
+        const decrypted = decryptLeadPII({ phone: b.lead?.phone || '', email: b.lead?.email || '' });
+        phone = decrypted.phone;
+        email = decrypted.email;
+      } catch {
+        // Keep fallback
+      }
+
+      return {
+        ...b,
+        lead: {
+          ...b.lead,
+          phone,
+          email,
+        },
+      };
     });
 
     return NextResponse.json({

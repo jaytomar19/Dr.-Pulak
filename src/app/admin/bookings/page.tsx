@@ -16,6 +16,8 @@ interface BookingItem {
   lead: {
     lead_id: string;
     name: string;
+    phone?: string;
+    email?: string;
     lead_status: string;
     created_at: string;
   };
@@ -217,7 +219,19 @@ function AdminBookingsContent() {
             <tbody>
               {bookings.map((b) => (
                 <tr key={b.booking_id}>
-                  <td><strong>{b.lead?.name || 'Patient'}</strong></td>
+                  <td>
+                    <strong>{b.lead?.name || 'Patient'}</strong>
+                    {b.lead?.phone && (
+                      <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
+                        📞 {b.lead.phone}
+                      </div>
+                    )}
+                    {b.lead?.email && (
+                      <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '2px', fontWeight: 500 }}>
+                        ✉️ {b.lead.email}
+                      </div>
+                    )}
+                  </td>
                   <td>
                     <span className="badge badge--neutral">{productLabels[b.product] || b.product}</span>
                   </td>
@@ -276,7 +290,11 @@ function AdminBookingsContent() {
         <div className="modal-overlay" onClick={() => setActiveBooking(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px', width: '100%', background: 'var(--color-surface)', padding: '2rem', borderRadius: '12px' }}>
             <h2>Update Consultation Booking</h2>
-            <p className="admin-subtitle">Patient: <strong>{activeBooking.lead?.name}</strong></p>
+            <p className="admin-subtitle" style={{ margin: '0.25rem 0 1rem 0' }}>
+              Patient: <strong>{activeBooking.lead?.name}</strong>
+              {activeBooking.lead?.phone && <span> &bull; 📞 {activeBooking.lead.phone}</span>}
+              {activeBooking.lead?.email && <span> &bull; ✉️ {activeBooking.lead.email}</span>}
+            </p>
 
             <div style={{ margin: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
