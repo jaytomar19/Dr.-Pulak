@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { auth } from '@/lib/auth';
 import { BandResult, Prisma } from '@prisma/client';
+import { decryptLeadPII } from '@/lib/encryption';
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
     }
 
     const total = await prisma.assessment_sessions.count({ where });
-    const sessions = await prisma.assessment_sessions.findMany({
+    const rawSessions = await prisma.assessment_sessions.findMany({
       where,
       orderBy: { started_at: 'desc' },
       skip: (page - 1) * limit,
@@ -32,11 +33,31 @@ export async function GET(req: NextRequest) {
           select: {
             lead_id: true,
             name: true,
+            phone: true,
+            email: true,
             lead_status: true,
             created_at: true,
           },
         },
       },
+    });
+
+    const sessions = rawSessions.map((sess) => {
+      let phone = sess.lead?.phone || '';
+      let email = sess.lead?.email || '';
+      try {
+        if (sess.lead?.phone || sess.lead?.email) {
+          const decrypted = decryptLeadPII({ phone: sess.lead?.phone || '', email: sess.lead?.email || '' });
+          phone = decrypted.phone;
+          email = decrypted.email;
+        }
+      } catch {
+        // Keep fallback
+      }
+      return {
+        ...sess,
+        lead: sess.lead ? { ...sess.lead, phone, email } : null,
+      };
     });
 
     const totalPages = Math.ceil(total / limit);
