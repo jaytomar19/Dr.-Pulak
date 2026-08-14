@@ -69,7 +69,7 @@ export const INSTAGRAM_REELS_CONFIG: { reels: InstagramReel[]; isPlaceholder: bo
 
 export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boolean; channelUrl: string } = {
   isPlaceholder: false,
-  channelUrl: 'https://www.youtube.com/@drpulakvatsya',
+  channelUrl: 'https://www.youtube.com/@drpulakvatsyaortho',
   videos: [
     {
       id: 'yt-1',
@@ -91,10 +91,10 @@ export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boo
     },
     {
       id: 'yt-3',
-      videoId: '40SASS3OaY8',
-      title: 'Knee Replacement',
-      youtubeUrl: 'https://youtu.be/40SASS3OaY8',
-      category: 'Robotic Surgery',
+      videoId: 'ir7-cu3g3FY',
+      title: '5 Warning Signs of ACL Injury You Should Never Ignore | AIIMS Doctor Explains',
+      youtubeUrl: 'https://youtu.be/ir7-cu3g3FY',
+      category: 'ACL & Ligament',
       isFeatured: true,
       isPlaceholder: false,
     },
