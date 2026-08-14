@@ -1,5 +1,8 @@
 'use client';
 
+import Reveal from '@/components/shared/Reveal';
+import Stagger from '@/components/shared/Stagger';
+
 interface GoogleReviewsWidgetProps {
   maxReviews?: number;
 }
@@ -29,7 +32,7 @@ export default function GoogleReviewsWidget({ maxReviews = 3 }: GoogleReviewsWid
   return (
     <section className="reviews-section">
       <div className="container">
-        <div className="reviews-header">
+        <Reveal variant="fade-up" className="reviews-header">
           <span className="eyebrow">PATIENT FEEDBACK</span>
           <h2 className="reviews-title">Recognized for Patient Education & Ethical Care</h2>
           <div className="reviews-summary">
@@ -37,11 +40,11 @@ export default function GoogleReviewsWidget({ maxReviews = 3 }: GoogleReviewsWid
             <span className="reviews-score">4.9 / 5.0 Rating</span>
             <span className="reviews-count">· Google Business Reviews</span>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="reviews-grid">
+        <Stagger className="reviews-grid" staggerInterval={90}>
           {reviews.map((review, idx) => (
-            <div key={idx} className="reviews-card">
+            <div key={idx} className="reviews-card" data-cursor="card">
               <div className="reviews-card__top">
                 <span className="reviews-card__stars">★★★★★</span>
                 <span className="reviews-card__date">{review.date}</span>
@@ -53,7 +56,7 @@ export default function GoogleReviewsWidget({ maxReviews = 3 }: GoogleReviewsWid
               </div>
             </div>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

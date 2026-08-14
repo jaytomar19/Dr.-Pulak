@@ -40,10 +40,20 @@ export default function Footer() {
           <div className="footer__nav-col">
             <h4 className="footer__col-title">Clinic & Practice</h4>
             <ul className="footer__contact-info">
-              <li>📍 {PRACTICE_CONFIG.clinicName}, {PRACTICE_CONFIG.location}</li>
-              <li>📞 Phone: {PRACTICE_CONFIG.phone}</li>
-              <li>✉️ Email: {PRACTICE_CONFIG.email}</li>
-              <li>🕒 Mon – Sat: 10:00 AM – 6:00 PM</li>
+              <li>
+                📍 <a href={PRACTICE_CONFIG.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="footer__link" style={{ display: 'inline' }}>
+                  {PRACTICE_CONFIG.fullAddress}
+                </a>
+              </li>
+              <li>
+                📞 Phone: <a href={PRACTICE_CONFIG.phoneTel} className="footer__link" style={{ display: 'inline' }}>{PRACTICE_CONFIG.phone}</a>
+              </li>
+              <li>
+                💬 WhatsApp: <a href={PRACTICE_CONFIG.whatsappUrl} target="_blank" rel="noopener noreferrer" className="footer__link" style={{ display: 'inline' }}>{PRACTICE_CONFIG.phone}</a>
+              </li>
+              <li>
+                ✉️ Email: <a href={`mailto:${PRACTICE_CONFIG.email}`} className="footer__link" style={{ display: 'inline' }}>{PRACTICE_CONFIG.email}</a>
+              </li>
             </ul>
           </div>
         </div>

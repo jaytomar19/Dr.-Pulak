@@ -58,12 +58,30 @@ export async function POST(req: NextRequest) {
       product: booking.product,
     });
 
-    // Save payment provider order reference to booking record
-    await prisma.bookings.update({
-      where: { booking_id },
-      data: {
-        payment_provider_ref: razorpayOrder.id,
-      },
+    // Save payment record and booking provider ref in a transaction
+    await prisma.$transaction(async (tx) => {
+      await tx.bookings.update({
+        where: { booking_id },
+        data: {
+          payment_provider_ref: razorpayOrder.id,
+        },
+      });
+
+      await tx.payments.upsert({
+        where: { razorpay_order_id: razorpayOrder.id },
+        create: {
+          booking_id: booking.booking_id,
+          razorpay_order_id: razorpayOrder.id,
+          amount_paise: amountPaise,
+          currency: razorpayOrder.currency || 'INR',
+          status: 'PENDING',
+        },
+        update: {
+          amount_paise: amountPaise,
+          currency: razorpayOrder.currency || 'INR',
+          status: 'PENDING',
+        },
+      });
     });
 
     return NextResponse.json({

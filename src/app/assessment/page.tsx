@@ -9,6 +9,7 @@ import {
   trackCaptureSubmit,
   trackResultView,
 } from '@/lib/analytics';
+import Loader from '@/components/shared/Loader';
 import './assessment.css';
 
 // Metadata is exported from a sibling server component when using the App Router;
@@ -239,34 +240,44 @@ export default function AssessmentPage() {
         )}
 
         {screen === 'intro' && (
-          <div>
+          <div key="intro" className="assessment-step-content">
             <p>This assessment uses doctor-approved configuration when it becomes available. It does not provide a diagnosis.</p>
             <div className="assessment-actions assessment-actions--single">
-              <button className="assessment-button" type="button" onClick={start} disabled={isLoading}>
-                {isLoading ? 'Starting…' : resumeAvailable ? 'Resume assessment' : 'Start assessment'}
+              <button className="assessment-button" type="button" onClick={start} disabled={isLoading} data-cursor="button">
+                {isLoading ? (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    <Loader size="sm" color="white" />
+                    <span>Starting…</span>
+                  </span>
+                ) : resumeAvailable ? (
+                  'Resume assessment'
+                ) : (
+                  'Start assessment'
+                )}
               </button>
             </div>
           </div>
         )}
 
         {question && (
-          <div>
+          <div key={screen} className="assessment-step-content">
             <h2>{question.prompt}</h2>
             <div className="assessment-options">
               {question.options.map((option) => (
-                <button className="assessment-option" type="button" key={option.value} onClick={() => submitAnswer(option.value)} disabled={isLoading}>
-                  {option.label}
+                <button className="assessment-option" type="button" key={option.value} onClick={() => submitAnswer(option.value)} disabled={isLoading} data-cursor="button">
+                  <span>{option.label}</span>
+                  <span aria-hidden="true">→</span>
                 </button>
               ))}
             </div>
             <div className="assessment-actions">
-              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading}>Back</button>
+              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading} data-cursor="button">Back</button>
             </div>
           </div>
         )}
 
         {screen === 'contact_capture' && (
-          <form className="assessment-form" onSubmit={submitContact}>
+          <form key="contact_capture" className="assessment-form assessment-step-content" onSubmit={submitContact}>
             <h2>Contact details</h2>
             <p>We use these details to follow up about your assessment request.</p>
             <label className="assessment-field">Full Name<input name="name" autoComplete="name" required minLength={2} maxLength={120} /></label>
@@ -275,25 +286,43 @@ export default function AssessmentPage() {
             <label className="assessment-consent"><input name="consent_service" type="checkbox" required />I consent to the use of my details to provide this assessment-related service.</label>
             <label className="assessment-consent"><input name="consent_marketing" type="checkbox" />I would like to receive marketing communications.</label>
             <div className="assessment-actions">
-              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading}>Back</button>
-              <button className="assessment-button" type="submit" disabled={isLoading}>{isLoading ? 'Saving…' : 'Continue'}</button>
+              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading} data-cursor="button">Back</button>
+              <button className="assessment-button" type="submit" disabled={isLoading} data-cursor="button">
+                {isLoading ? (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    <Loader size="sm" color="white" />
+                    <span>Saving…</span>
+                  </span>
+                ) : (
+                  'Continue'
+                )}
+              </button>
             </div>
           </form>
         )}
 
         {screen === 'completion' && (
-          <div>
+          <div key="completion" className="assessment-step-content">
             <h2>Assessment complete</h2>
             <p>Your responses are ready to be processed using the configured assessment rules.</p>
             <div className="assessment-actions">
-              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading}>Back</button>
-              <button className="assessment-button" type="button" onClick={loadResult} disabled={isLoading}>{isLoading ? 'Loading…' : 'View result'}</button>
+              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading} data-cursor="button">Back</button>
+              <button className="assessment-button" type="button" onClick={loadResult} disabled={isLoading} data-cursor="button">
+                {isLoading ? (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    <Loader size="sm" color="white" />
+                    <span>Analyzing Responses…</span>
+                  </span>
+                ) : (
+                  'View result'
+                )}
+              </button>
             </div>
           </div>
         )}
 
         {screen === 'result' && result && (
-          <div>
+          <div key="result" className="assessment-step-content">
             <h2>Assessment result</h2>
             <p>{result.summary}</p>
             <h3>Possible considerations</h3>

@@ -154,6 +154,15 @@ model delivery_log {
   @@index([lead_id])
 }
 
+enum PaymentState {
+  PENDING
+  AUTHORIZED
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
 model bookings {
   booking_id           String        @id @default(uuid()) @db.Uuid
   lead_id              String        @db.Uuid
@@ -166,8 +175,31 @@ model bookings {
   updated_at           DateTime      @updatedAt
 
   lead                 leads         @relation(fields: [lead_id], references: [lead_id])
+  payments             payments[]
 
   @@index([lead_id])
+}
+
+model payments {
+  payment_id           String       @id @default(uuid()) @db.Uuid
+  booking_id           String       @db.Uuid
+  razorpay_order_id    String       @unique
+  razorpay_payment_id  String?      @unique
+  razorpay_signature   String?
+  amount_paise         Int
+  currency             String       @default("INR")
+  status               PaymentState @default(PENDING)
+  payment_provider     String       @default("razorpay")
+  error_code           String?
+  error_description    String?
+  created_at           DateTime     @default(now())
+  updated_at           DateTime     @updatedAt
+
+  booking              bookings     @relation(fields: [booking_id], references: [booking_id])
+
+  @@index([booking_id])
+  @@index([razorpay_order_id])
+  @@index([status])
 }
 
 model admin_users {

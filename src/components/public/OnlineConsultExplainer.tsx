@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import Reveal from '@/components/shared/Reveal';
+import Stagger from '@/components/shared/Stagger';
+import Magnetic from '@/components/shared/Magnetic';
 
 export default function OnlineConsultExplainer() {
   const steps = [
@@ -32,17 +35,17 @@ export default function OnlineConsultExplainer() {
   return (
     <section className="journey-section">
       <div className="container">
-        <div className="journey-header">
+        <Reveal variant="fade-up" className="journey-header">
           <span className="eyebrow eyebrow--gold">CARE PATHWAY</span>
           <h2 className="journey-title">Your Patient Care Journey</h2>
           <p className="journey-subtitle">
             A structured, transparent clinical approach ensuring you are supported at every phase from initial evaluation to complete recovery.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="journey-timeline">
+        <Stagger className="journey-timeline" staggerInterval={100}>
           {steps.map((step, idx) => (
-            <div key={idx} className="journey-step">
+            <div key={idx} className="journey-step" data-cursor="card">
               <div className="journey-step__badge">
                 <span className="journey-step__num">{step.num}</span>
               </div>
@@ -50,12 +53,14 @@ export default function OnlineConsultExplainer() {
               <p className="journey-step__desc">{step.desc}</p>
             </div>
           ))}
-        </div>
+        </Stagger>
 
         <div className="journey-cta">
-          <Link href="/consult/" className="btn btn--secondary btn--lg">
-            Start Your Consultation Journey
-          </Link>
+          <Magnetic strength={5} maxOffset={8}>
+            <Link href="/consult/" className="btn btn--secondary btn--lg" data-cursor="button">
+              Start Your Consultation Journey <span className="btn-arrow">→</span>
+            </Link>
+          </Magnetic>
         </div>
       </div>
     </section>

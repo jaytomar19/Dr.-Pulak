@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // External packages for Node runtime
+  serverExternalPackages: ["@prisma/client", "prisma", "bcryptjs"],
+
   // Image optimization
   images: {
     formats: ["image/webp", "image/avif"],

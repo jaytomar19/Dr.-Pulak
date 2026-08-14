@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/shared/Loader';
 
 interface BookingItem {
   booking_id: string;
@@ -18,6 +19,15 @@ interface BookingItem {
     lead_status: string;
     created_at: string;
   };
+  payments?: Array<{
+    payment_id: string;
+    razorpay_order_id: string;
+    razorpay_payment_id: string | null;
+    amount_paise: number;
+    currency: string;
+    status: string;
+    created_at: string;
+  }>;
 }
 
 interface Pagination {
@@ -187,7 +197,7 @@ function AdminBookingsContent() {
       {error && <div className="error-banner">⚠️ {error}</div>}
 
       {isLoading ? (
-        <div className="loading-state"><div className="spinner"></div><p>Loading bookings...</p></div>
+        <Loader size="md" color="primary" label="Loading bookings..." center />
       ) : bookings.length === 0 ? (
         <div className="empty-state"><h3>No bookings found</h3><p>No bookings match your current filter.</p></div>
       ) : (
@@ -308,8 +318,15 @@ function AdminBookingsContent() {
 
               {activeBooking.payment_provider_ref && (
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.25rem' }}>Payment Reference</label>
+                  <label style={{ display: 'block', marginBottom: '0.25rem' }}>Razorpay Order ID</label>
                   <code>{activeBooking.payment_provider_ref}</code>
+                </div>
+              )}
+
+              {activeBooking.payments && activeBooking.payments.length > 0 && activeBooking.payments[0].razorpay_payment_id && (
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem' }}>Razorpay Payment ID</label>
+                  <code>{activeBooking.payments[0].razorpay_payment_id}</code>
                 </div>
               )}
             </div>

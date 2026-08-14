@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Loader from '@/components/shared/Loader';
 
 interface LeadSession {
   session_id: string;
@@ -225,10 +226,7 @@ function AdminLeadsContent() {
 
       {/* Loading Skeleton State */}
       {isLoading ? (
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading patient leads from database...</p>
-        </div>
+        <Loader size="md" color="primary" label="Loading patient leads from database..." center />
       ) : leads.length === 0 ? (
         /* Empty State */
         <div className="empty-state">

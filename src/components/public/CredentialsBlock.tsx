@@ -1,3 +1,6 @@
+import Reveal from '@/components/shared/Reveal';
+import Stagger from '@/components/shared/Stagger';
+
 export default function CredentialsBlock() {
   const pillars = [
     {
@@ -25,23 +28,23 @@ export default function CredentialsBlock() {
   return (
     <section className="philosophy-section">
       <div className="container">
-        <div className="philosophy-header">
-          <span className="eyebrow">PRACTICE PHILOSOPHY</span>
+        <Reveal variant="fade-up" className="philosophy-header">
+          <span className="eyebrow eyebrow--gold">PRACTICE PHILOSOPHY</span>
           <h2 className="philosophy-title">Patient-Centered Knee Care Founded on Clinical Integrity</h2>
           <p className="philosophy-subtitle">
             Providing evidence-based orthopaedic care in South Delhi with a steadfast commitment to patient education and non-surgical preservation.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="philosophy-grid">
+        <Stagger className="philosophy-grid" staggerInterval={90}>
           {pillars.map((pillar, idx) => (
-            <div key={idx} className="philosophy-card">
+            <div key={idx} className="philosophy-card" data-cursor="card">
               <span className="philosophy-card__num">{pillar.step}</span>
               <h3 className="philosophy-card__title">{pillar.title}</h3>
               <p className="philosophy-card__desc">{pillar.desc}</p>
             </div>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

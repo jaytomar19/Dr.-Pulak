@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Reveal from '@/components/shared/Reveal';
+import Magnetic from '@/components/shared/Magnetic';
 
 interface AssessmentCTAProps {
   variant?: 'inline' | 'sticky' | 'hero';
@@ -18,19 +20,23 @@ export default function AssessmentCTA({
   return (
     <section className={`assessment-banner assessment-banner--${variant} ${className}`}>
       <div className="container">
-        <div className="assessment-banner__box">
-          <div className="assessment-banner__content">
-            <span className="eyebrow eyebrow--gold">FREE ONLINE SCREENING</span>
-            <h2 className="assessment-banner__heading">{heading}</h2>
-            <p className="assessment-banner__subheading">{subheading}</p>
+        <Reveal variant="scale-up">
+          <div className="assessment-banner__box" data-cursor="card">
+            <div className="assessment-banner__content">
+              <span className="eyebrow eyebrow--gold">FREE ONLINE SCREENING</span>
+              <h2 className="assessment-banner__heading">{heading}</h2>
+              <p className="assessment-banner__subheading">{subheading}</p>
+            </div>
+            <div className="assessment-banner__action">
+              <Magnetic strength={5} maxOffset={8}>
+                <Link href="/knee-check/" className="btn btn--secondary btn--lg assessment-banner__btn" data-cursor="button">
+                  {buttonText} <span className="btn-arrow">→</span>
+                </Link>
+              </Magnetic>
+              <span className="assessment-banner__hint">Takes 90 seconds · Confidential</span>
+            </div>
           </div>
-          <div className="assessment-banner__action">
-            <Link href="/knee-check/" className="btn btn--secondary btn--lg assessment-banner__btn">
-              {buttonText} →
-            </Link>
-            <span className="assessment-banner__hint">Takes 90 seconds · Confidential</span>
-          </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

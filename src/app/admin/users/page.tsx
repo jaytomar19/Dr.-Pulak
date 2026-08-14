@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import Loader from '@/components/shared/Loader';
 
 interface AdminUserItem {
   user_id: string;
@@ -164,7 +165,7 @@ function AdminUsersContent() {
       {successMsg && <div className="success-banner" style={{ background: '#064e3b', color: '#6ee7b7', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem' }}>✓ {successMsg}</div>}
 
       {isLoading ? (
-        <div className="loading-state"><div className="spinner"></div><p>Loading users...</p></div>
+        <Loader size="md" color="primary" label="Loading users..." center />
       ) : users.length === 0 ? (
         <div className="empty-state"><h3>No users found</h3></div>
       ) : (

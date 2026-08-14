@@ -39,6 +39,9 @@ export async function POST(req: NextRequest) {
         });
 
         if (booking && booking.payment_status !== 'paid') {
+          const paymentId = paymentEntity?.id;
+          const amountPaise = paymentEntity?.amount || 100000;
+
           await prisma.$transaction(async (tx) => {
             await tx.bookings.update({
               where: { booking_id: booking.booking_id },
@@ -48,6 +51,23 @@ export async function POST(req: NextRequest) {
                 payment_provider_ref: orderId || booking.payment_provider_ref,
               },
             });
+
+            if (orderId) {
+              await tx.payments.upsert({
+                where: { razorpay_order_id: orderId },
+                create: {
+                  booking_id: booking.booking_id,
+                  razorpay_order_id: orderId,
+                  razorpay_payment_id: paymentId || null,
+                  amount_paise: amountPaise,
+                  status: 'PAID',
+                },
+                update: {
+                  razorpay_payment_id: paymentId || undefined,
+                  status: 'PAID',
+                },
+              });
+            }
 
             await tx.leads.update({
               where: { lead_id: booking.lead_id },

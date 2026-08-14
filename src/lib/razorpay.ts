@@ -80,8 +80,41 @@ export function verifyRazorpayWebhookSignature(
     .update(rawBody)
     .digest('hex');
 
+  if (signature.length !== expectedSignature.length) return false;
+
   return crypto.timingSafeEqual(
     Buffer.from(signature),
     Buffer.from(expectedSignature)
+  );
+}
+
+export function verifyRazorpayPaymentSignature(
+  razorpayOrderId: string,
+  razorpayPaymentId: string,
+  razorpaySignature: string
+): boolean {
+  const secret = process.env.RAZORPAY_KEY_SECRET;
+
+  if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+    return false;
+  }
+
+  // Development placeholder fallback when live credentials are unconfigured
+  if (!secret) {
+    return razorpayOrderId.startsWith('order_dev_');
+  }
+
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+    .digest('hex');
+
+  if (expectedSignature.length !== razorpaySignature.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(
+    Buffer.from(expectedSignature),
+    Buffer.from(razorpaySignature)
   );
 }

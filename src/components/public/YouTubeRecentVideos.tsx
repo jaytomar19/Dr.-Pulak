@@ -3,6 +3,9 @@
 import React from 'react';
 import Image from 'next/image';
 import { YOUTUBE_VIDEOS_CONFIG } from '@/config/media';
+import Reveal from '@/components/shared/Reveal';
+import Stagger from '@/components/shared/Stagger';
+import TiltCard from '@/components/shared/TiltCard';
 
 interface YouTubeRecentVideosProps {
   channelName?: string;
@@ -19,7 +22,7 @@ export default function YouTubeRecentVideos({
   return (
     <section className="insights-section">
       <div className="container">
-        <div className="insights-header">
+        <Reveal variant="fade-up" className="insights-header">
           <div>
             <span className="eyebrow">CLINICAL INSIGHTS</span>
             <h2 className="insights-title">Educational Resources & Patient Guidance from {channelName}</h2>
@@ -30,10 +33,11 @@ export default function YouTubeRecentVideos({
             target={isPlaceholder ? '_self' : '_blank'}
             rel="noopener noreferrer"
             onClick={(e) => isPlaceholder && e.preventDefault()}
+            data-cursor="button"
           >
             Visit Video Library →
           </a>
-        </div>
+        </Reveal>
 
         {isPlaceholder && (
           <div className="placeholder-content-banner" style={{ marginBottom: '1.5rem' }}>
@@ -43,47 +47,52 @@ export default function YouTubeRecentVideos({
           </div>
         )}
         
-        <div className="insights-grid">
+        <Stagger className="insights-grid" staggerInterval={110}>
           {displayVideos.map((video) => (
-            <article key={video.id} className="insights-card">
-              <div className="insights-card__media">
-                {video.videoId ? (
-                  <Image 
-                    src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`} 
-                    alt={video.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="insights-card__thumb"
-                  />
-                ) : (
-                  <div className="insights-card__placeholder-thumb">
-                    <span>🎬 Video Coming Soon</span>
+            <TiltCard key={video.id} maxTilt={3} scale={1.02}>
+              <article className="insights-card" data-cursor="card">
+                <div className="insights-card__media">
+                  {video.videoId ? (
+                    <Image 
+                      src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`} 
+                      alt={video.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="insights-card__thumb"
+                    />
+                  ) : (
+                    <div className="insights-card__placeholder-thumb">
+                      <span>🎬 Video Coming Soon</span>
+                    </div>
+                  )}
+                  <div className="insights-card__play" data-cursor="button">
+                    <span>▶</span>
                   </div>
-                )}
-                <div className="insights-card__play">
-                  <span>▶</span>
+                  {video.duration && <span className="insights-card__duration">{video.duration}</span>}
                 </div>
-                {video.duration && <span className="insights-card__duration">{video.duration}</span>}
-              </div>
-              <div className="insights-card__body">
-                <span className="insights-card__category">{video.category}</span>
-                <h3 className="insights-card__title">{video.title}</h3>
-              </div>
-            </article>
+                <div className="insights-card__body">
+                  <span className="insights-card__category">{video.category}</span>
+                  <h3 className="insights-card__title">{video.title}</h3>
+                </div>
+              </article>
+            </TiltCard>
           ))}
-        </div>
+        </Stagger>
 
-        <div className="insights-bottom-action text-center" style={{ marginTop: '2.5rem' }}>
-          <a
-            href={isPlaceholder ? '#' : 'https://youtube.com'}
-            target={isPlaceholder ? '_self' : '_blank'}
-            rel="noopener noreferrer"
-            className="btn btn--ghost btn--md"
-            onClick={(e) => isPlaceholder && e.preventDefault()}
-          >
-            Browse Full Educational Video Library →
-          </a>
-        </div>
+        <Reveal variant="fade-up" delay={150}>
+          <div className="insights-bottom-action text-center" style={{ marginTop: '2.5rem' }}>
+            <a
+              href={isPlaceholder ? '#' : 'https://youtube.com'}
+              target={isPlaceholder ? '_self' : '_blank'}
+              rel="noopener noreferrer"
+              className="btn btn--ghost btn--md"
+              onClick={(e) => isPlaceholder && e.preventDefault()}
+              data-cursor="button"
+            >
+              Browse Full Educational Video Library →
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

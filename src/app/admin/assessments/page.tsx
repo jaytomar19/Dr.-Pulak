@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/shared/Loader';
 
 interface AssessmentSessionItem {
   session_id: string;
@@ -102,10 +103,7 @@ function AdminAssessmentsContent() {
       )}
 
       {isLoading ? (
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading assessment sessions...</p>
-        </div>
+        <Loader size="md" color="primary" label="Loading assessment sessions..." center />
       ) : sessions.length === 0 ? (
         <div className="empty-state">
           <h3>No sessions found</h3>

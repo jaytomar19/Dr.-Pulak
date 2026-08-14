@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import AssessmentCTA from '@/components/public/AssessmentCTA';
+import Reveal from '@/components/shared/Reveal';
 
 export const metadata = {
   title: 'Understanding Knee Pain — Causes & Treatment | Dr. Pulak Vatsya',
@@ -89,91 +90,112 @@ export default function KneePainPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <div className="container">
-        <h1>Understanding Knee Pain — Causes, Diagnosis & Treatment</h1>
-        <p className="condition-hub__intro">
-          Knee pain is a frequent complaint that affects people of all ages. Understanding the underlying cause is the first step toward finding effective relief and restoring mobility.
-        </p>
+        <Reveal variant="fade-up">
+          <span className="eyebrow">CONSERVATIVE & PREVENTIVE ORTHOPAEDICS</span>
+          <h1>Understanding Knee Pain — Causes, Diagnosis & Treatment</h1>
+          <p className="condition-hub__intro">
+            Knee pain is a frequent complaint that affects people of all ages. Understanding the underlying cause is the first step toward finding effective relief and restoring mobility.
+          </p>
+        </Reveal>
 
-        <nav className="condition-hub__toc">
-          <h3>Table of Contents</h3>
-          <ul>
-            <li><a href="#causes">Common Causes</a></li>
-            <li><a href="#chondromalacia">Chondromalacia Patellae</a></li>
-            <li><a href="#runners-knee">Runner&apos;s Knee</a></li>
-            <li><a href="#stairs">Pain Going Down Stairs</a></li>
-            <li><a href="#when-to-seek-help">When to Seek Help</a></li>
-            <li><a href="#treatment">Non-Surgical Treatment Options</a></li>
-            <li><a href="#faq">Frequently Asked Questions</a></li>
-          </ul>
-        </nav>
+        <Reveal variant="fade-up" delay={80}>
+          <nav className="condition-hub__toc">
+            <h3>Table of Contents</h3>
+            <ul>
+              <li><a href="#causes" data-cursor="link">Common Causes</a></li>
+              <li><a href="#chondromalacia" data-cursor="link">Chondromalacia Patellae</a></li>
+              <li><a href="#runners-knee" data-cursor="link">Runner&apos;s Knee</a></li>
+              <li><a href="#stairs" data-cursor="link">Pain Going Down Stairs</a></li>
+              <li><a href="#when-to-seek-help" data-cursor="link">When to Seek Help</a></li>
+              <li><a href="#treatment" data-cursor="link">Non-Surgical Treatment Options</a></li>
+              <li><a href="#faq" data-cursor="link">Frequently Asked Questions</a></li>
+            </ul>
+          </nav>
+        </Reveal>
 
-        <section id="causes" className="condition-hub__section">
-          <h2>Common Causes</h2>
-          <p>Knee pain can result from injuries, mechanical problems, types of arthritis, or other issues. It is important to have persistent pain properly evaluated.</p>
-        </section>
+        <Reveal variant="fade-up">
+          <section id="causes" className="condition-hub__section">
+            <h2>Common Causes</h2>
+            <p>Knee pain can result from injuries, mechanical problems, types of arthritis, or other issues. It is important to have persistent pain properly evaluated.</p>
+          </section>
+        </Reveal>
 
-        <section id="chondromalacia" className="condition-hub__section">
-          <h2>Chondromalacia Patellae</h2>
-          <p>This condition involves the softening and breakdown of the cartilage on the underside of the kneecap. It may cause a dull, aching pain.</p>
-        </section>
-
-        <AssessmentCTA />
-
-        <section id="runners-knee" className="condition-hub__section">
-          <h2>Runner&apos;s Knee</h2>
-          <p>Also known as patellofemoral pain syndrome, this causes pain in the front of the knee and around the patella, often aggravated by running or sitting for long periods.</p>
-        </section>
-
-        <section id="stairs" className="condition-hub__section">
-          <h2>Pain Going Down Stairs</h2>
-          <p>Experiencing pain specifically when descending stairs is a common symptom of kneecap-related issues, as this action places increased stress on the patellofemoral joint.</p>
-        </section>
-
-        <section id="when-to-seek-help" className="condition-hub__section">
-          <h2>When to Seek Help</h2>
-          <p>If you experience sudden swelling, severe pain, instability, or if pain prevents you from performing daily activities, it&apos;s time to consult a doctor.</p>
-        </section>
-
-        <section id="treatment" className="condition-hub__section">
-          <h2>Non-Surgical Treatment Options</h2>
-          <p>Many forms of knee pain respond well to non-surgical treatments such as rest, physical therapy, targeted exercises, and anti-inflammatory medications.</p>
-        </section>
+        <Reveal variant="fade-up">
+          <section id="chondromalacia" className="condition-hub__section">
+            <h2>Chondromalacia Patellae</h2>
+            <p>This condition involves the softening and breakdown of the cartilage on the underside of the kneecap. It may cause a dull, aching pain.</p>
+          </section>
+        </Reveal>
 
         <AssessmentCTA />
 
-        <section id="faq" className="condition-hub__section condition-hub__faq">
-          <h2>Frequently Asked Questions</h2>
-          <details>
-            <summary>Why does my knee hurt when going down stairs?</summary>
-            <p>Pain when going down stairs is often related to patellofemoral pain syndrome or chondromalacia patellae, where the kneecap does not track smoothly.</p>
-          </details>
-          <details>
-            <summary>What is runner&apos;s knee?</summary>
-            <p>Runner&apos;s knee is a broad term describing pain around or behind the kneecap, common in active individuals.</p>
-          </details>
-          <details>
-            <summary>Can knee pain be treated without surgery?</summary>
-            <p>Yes, many causes of knee pain can be managed with physical therapy, activity modification, weight management, and medications.</p>
-          </details>
-          <details>
-            <summary>When should I see a doctor for knee pain?</summary>
-            <p>You should see a doctor if you have severe pain, significant swelling, inability to bear weight, or if the pain persists despite rest.</p>
-          </details>
-          <details>
-            <summary>Does icing help knee pain?</summary>
-            <p>Icing may help reduce acute swelling and numb the pain. It is often recommended as part of initial care for knee injuries.</p>
-          </details>
-        </section>
+        <Reveal variant="fade-up">
+          <section id="runners-knee" className="condition-hub__section">
+            <h2>Runner&apos;s Knee</h2>
+            <p>Also known as patellofemoral pain syndrome, this causes pain in the front of the knee and around the patella, often aggravated by running or sitting for long periods.</p>
+          </section>
+        </Reveal>
+
+        <Reveal variant="fade-up">
+          <section id="stairs" className="condition-hub__section">
+            <h2>Pain Going Down Stairs</h2>
+            <p>Experiencing pain specifically when descending stairs is a common symptom of kneecap-related issues, as this action places increased stress on the patellofemoral joint.</p>
+          </section>
+        </Reveal>
+
+        <Reveal variant="fade-up">
+          <section id="when-to-seek-help" className="condition-hub__section">
+            <h2>When to Seek Help</h2>
+            <p>If you experience sudden swelling, severe pain, instability, or if pain prevents you from performing daily activities, it&apos;s time to consult a doctor.</p>
+          </section>
+        </Reveal>
+
+        <Reveal variant="fade-up">
+          <section id="treatment" className="condition-hub__section">
+            <h2>Non-Surgical Treatment Options</h2>
+            <p>Many forms of knee pain respond well to non-surgical treatments such as rest, physical therapy, targeted exercises, and anti-inflammatory medications.</p>
+          </section>
+        </Reveal>
 
         <AssessmentCTA />
 
-        <section className="condition-hub__related">
-          <h2>Related Articles</h2>
-          <ul>
-            <li><Link href="/knee-replacement/">Knee Replacement</Link></li>
-            <li><Link href="/acl/">ACL Injuries</Link></li>
-          </ul>
-        </section>
+        <Reveal variant="fade-up">
+          <section id="faq" className="condition-hub__section condition-hub__faq">
+            <h2>Frequently Asked Questions</h2>
+            <details>
+              <summary>Why does my knee hurt when going down stairs?</summary>
+              <p>Pain when going down stairs is often related to patellofemoral pain syndrome or chondromalacia patellae, where the kneecap does not track smoothly.</p>
+            </details>
+            <details>
+              <summary>What is runner&apos;s knee?</summary>
+              <p>Runner&apos;s knee is a broad term describing pain around or behind the kneecap, common in active individuals.</p>
+            </details>
+            <details>
+              <summary>Can knee pain be treated without surgery?</summary>
+              <p>Yes, many causes of knee pain can be managed with physical therapy, activity modification, weight management, and medications.</p>
+            </details>
+            <details>
+              <summary>When should I see a doctor for knee pain?</summary>
+              <p>You should see a doctor if you have severe pain, significant swelling, inability to bear weight, or if the pain persists despite rest.</p>
+            </details>
+            <details>
+              <summary>Does icing help knee pain?</summary>
+              <p>Icing may help reduce acute swelling and numb the pain. It is often recommended as part of initial care for knee injuries.</p>
+            </details>
+          </section>
+        </Reveal>
+
+        <AssessmentCTA />
+
+        <Reveal variant="fade-up">
+          <section className="condition-hub__related">
+            <h2>Related Articles</h2>
+            <ul>
+              <li><Link href="/knee-replacement/" data-cursor="link">Knee Replacement</Link></li>
+              <li><Link href="/acl/" data-cursor="link">ACL Injuries</Link></li>
+            </ul>
+          </section>
+        </Reveal>
       </div>
     </article>
   );

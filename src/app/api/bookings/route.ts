@@ -139,6 +139,19 @@ export async function GET(req: NextRequest) {
             created_at: true,
           },
         },
+        payments: {
+          select: {
+            payment_id: true,
+            razorpay_order_id: true,
+            razorpay_payment_id: true,
+            amount_paise: true,
+            currency: true,
+            status: true,
+            created_at: true,
+          },
+          orderBy: { created_at: 'desc' },
+          take: 1,
+        },
       },
     });
 

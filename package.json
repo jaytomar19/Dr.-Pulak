@@ -4,7 +4,7 @@
   "private": true,
   "description": "Patient-acquisition funnel website for Dr. Pulak Vatsya — StepUp Joints, New Delhi",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

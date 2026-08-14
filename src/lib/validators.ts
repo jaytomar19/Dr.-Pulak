@@ -91,3 +91,11 @@ export const CreatePublicBookingSchema = z.object({
 });
 export type CreatePublicBooking = z.infer<typeof CreatePublicBookingSchema>;
 
+export const VerifyPaymentSchema = z.object({
+  booking_id: z.string().uuid(),
+  razorpay_order_id: z.string().min(1),
+  razorpay_payment_id: z.string().min(1),
+  razorpay_signature: z.string().min(1),
+});
+export type VerifyPayment = z.infer<typeof VerifyPaymentSchema>;
+
