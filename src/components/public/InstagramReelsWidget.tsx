@@ -53,15 +53,6 @@ function ReelCardItem({ reel }: { reel: InstagramReel }) {
               </div>
             )}
           </div>
-
-          <div className="reel-card__content">
-            <h3 className="reel-card__title">{reel.title}</h3>
-            <p className="reel-card__description">{reel.shortDescription}</p>
-
-            <div className="btn btn--outline btn--sm reel-card__cta" data-cursor="button" style={{ width: '100%', justifyContent: 'center' }}>
-              View Reel on Instagram →
-            </div>
-          </div>
         </a>
       </div>
     </TiltCard>
