@@ -1,5 +1,6 @@
 export interface InstagramReel {
   id: string;
+  reelId?: string;
   title: string;
   shortDescription: string;
   instagramUrl: string;
@@ -34,35 +35,39 @@ export interface BlogPost {
   coverImage?: string;
 }
 
-export const INSTAGRAM_REELS_CONFIG: { reels: InstagramReel[]; isPlaceholder: boolean } = {
-  isPlaceholder: true,
+export const INSTAGRAM_REELS_CONFIG: { reels: InstagramReel[]; isPlaceholder: boolean; instagramPageUrl: string } = {
+  isPlaceholder: false,
+  instagramPageUrl: 'https://www.instagram.com/dr.pulakvatsya/',
   reels: [
     {
-      id: 'reel-placeholder-1',
+      id: 'reel-1',
+      reelId: 'DVrEsMJk9t3',
       title: 'Knee Health & Joint Mobility Tips',
-      shortDescription: 'Practical advice on preserving joint health and preventing ligament strain.',
-      instagramUrl: '#',
+      shortDescription: 'Practical advice from Dr. Pulak Vatsya on preserving joint health and preventing ligament strain.',
+      instagramUrl: 'https://www.instagram.com/reel/DVrEsMJk9t3/',
       category: 'Joint Health',
       isFeatured: true,
-      isPlaceholder: true,
+      isPlaceholder: false,
     },
     {
-      id: 'reel-placeholder-2',
+      id: 'reel-2',
+      reelId: 'DbVw_vST6y2',
       title: 'ACL Injury Prevention & Rehabilitation',
       shortDescription: 'Key exercises for sports injury prevention and post-surgical recovery.',
-      instagramUrl: '#',
+      instagramUrl: 'https://www.instagram.com/reel/DbVw_vST6y2/',
       category: 'Sports Medicine',
       isFeatured: true,
-      isPlaceholder: true,
+      isPlaceholder: false,
     },
     {
-      id: 'reel-placeholder-3',
+      id: 'reel-3',
+      reelId: 'DbI27ZKTIWH',
       title: 'When to Consider Robotic Knee Replacement',
-      shortDescription: 'Understanding precision alignment and recovery timelines.',
-      instagramUrl: '#',
+      shortDescription: 'Understanding sub-millimeter precision alignment and recovery timelines.',
+      instagramUrl: 'https://www.instagram.com/reel/DbI27ZKTIWH/',
       category: 'Robotic Surgery',
       isFeatured: true,
-      isPlaceholder: true,
+      isPlaceholder: false,
     },
   ],
 };
