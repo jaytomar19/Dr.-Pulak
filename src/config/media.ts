@@ -74,9 +74,9 @@ export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boo
     {
       id: 'yt-1',
       videoId: 'Gy5ywiHvJ6k',
-      title: 'Understanding Modern Knee & Joint Replacement Surgery',
+      title: 'Fix Meniscus Tear without Surgery (100% Effective) | AIIMS Doctor Explains!',
       youtubeUrl: 'https://youtu.be/Gy5ywiHvJ6k',
-      category: 'Patient Guide',
+      category: 'Non-Surgical Care',
       isFeatured: true,
       isPlaceholder: false,
     },
