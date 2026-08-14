@@ -24,7 +24,8 @@ export function isRazorpayConfigured(): boolean {
 export async function createRazorpayOrder(
   amountInPaise: number,
   receipt: string,
-  notes: Record<string, string> = {}
+  notes: Record<string, string> = {},
+  currency: string = 'INR'
 ): Promise<RazorpayOrderResponse> {
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -37,7 +38,7 @@ export async function createRazorpayOrder(
       amount: amountInPaise,
       amount_paid: 0,
       amount_due: amountInPaise,
-      currency: 'INR',
+      currency,
       receipt,
       status: 'created',
       created_at: Math.floor(Date.now() / 1000),
@@ -54,7 +55,7 @@ export async function createRazorpayOrder(
     },
     body: JSON.stringify({
       amount: amountInPaise,
-      currency: 'INR',
+      currency,
       receipt,
       notes,
     }),

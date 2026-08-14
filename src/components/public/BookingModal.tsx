@@ -3,17 +3,21 @@
 import React, { useState } from 'react';
 import RazorpayCheckoutButton from '@/components/public/RazorpayCheckoutButton';
 
+export type ConsultationProduct = 'opd' | 'online_live' | 'imaging_review' | 'second_opinion' | 'consult_48h' | 'international';
+
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultProduct?: 'opd' | 'online_live' | 'imaging_review' | 'second_opinion';
+  defaultProduct?: ConsultationProduct;
 }
 
 const PRODUCT_LABELS: Record<string, { title: string; price: string }> = {
+  consult_48h: { title: '48-Hour Video Response Consultation', price: '₹500' },
+  online_live: { title: 'Online Video Consultation (Includes MRI/X-Ray Review)', price: '₹1,000' },
+  second_opinion: { title: 'Surgical Second Opinion', price: '₹800' },
+  international: { title: 'International Consultation', price: '$25 USD' },
   opd: { title: 'In-Person OPD Consultation', price: '₹1,000' },
-  online_live: { title: 'Online Video Consult', price: '₹1,000' },
-  imaging_review: { title: 'Imaging & MRI Review', price: '₹1,500' },
-  second_opinion: { title: 'Surgical Second Opinion', price: '₹2,000' },
+  imaging_review: { title: 'Online Video Consultation (Includes MRI/X-Ray Review)', price: '₹1,000' },
 };
 
 export default function BookingModal({
@@ -21,10 +25,11 @@ export default function BookingModal({
   onClose,
   defaultProduct = 'opd',
 }: BookingModalProps) {
-  const [product, setProduct] = useState<'opd' | 'online_live' | 'imaging_review' | 'second_opinion'>(defaultProduct);
+  const [product, setProduct] = useState<ConsultationProduct>(defaultProduct);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [medicalNotes, setMedicalNotes] = useState('');
   const [slotDate, setSlotDate] = useState(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -52,7 +57,7 @@ export default function BookingModal({
 
       const cleanPhone = phone.trim().replace(/\D/g, '');
       if (!cleanPhone || cleanPhone.length < 10) {
-        throw new Error('Please enter a valid 10-digit mobile number.');
+        throw new Error('Please enter a valid mobile number.');
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -125,6 +130,8 @@ export default function BookingModal({
           padding: '2rem',
           boxShadow: 'var(--shadow-xl)',
           position: 'relative',
+          maxHeight: '90vh',
+          overflowY: 'auto',
         }}
       >
         <button
@@ -138,7 +145,7 @@ export default function BookingModal({
         {step === 'details' && (
           <div>
             <span className="eyebrow" style={{ color: 'var(--color-primary)', fontWeight: 700 }}>RESERVE CONSULTATION</span>
-            <h2 style={{ fontSize: '1.65rem', color: 'var(--color-navy)', margin: '0.25rem 0 1.25rem 0' }}>Book Appointment with Dr. Pulak Vatsya</h2>
+            <h2 style={{ fontSize: '1.65rem', color: 'var(--color-navy)', margin: '0.25rem 0 1.25rem 0' }}>Book Consultation with Dr. Pulak Vatsya</h2>
 
             {errorMsg && (
               <div style={{ padding: '0.75rem 1rem', background: '#FEE2E2', border: '1px solid #FCA5A5', color: '#991B1B', borderRadius: '10px', fontSize: '0.875rem', marginBottom: '1rem' }}>
@@ -148,18 +155,44 @@ export default function BookingModal({
 
             <form onSubmit={handleSubmitDetails} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>Select Consultation Type</label>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>Select Consultation Service</label>
                 <select
                   value={product}
-                  onChange={(e) => setProduct(e.target.value as 'opd' | 'online_live' | 'imaging_review' | 'second_opinion')}
+                  onChange={(e) => setProduct(e.target.value as ConsultationProduct)}
                   style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--color-border)', background: 'var(--color-bg-base)', fontSize: '0.95rem', color: 'var(--color-navy)' }}
                 >
+                  <option value="consult_48h">48-Hour Video Response Consultation (₹500)</option>
+                  <option value="online_live">Online Video Consultation (₹1,000 — Includes MRI/X-Ray Review)</option>
+                  <option value="second_opinion">Surgical Second Opinion (₹800)</option>
+                  <option value="international">International Consultation ($25 USD)</option>
                   <option value="opd">In-Person OPD Visit (₹1,000)</option>
-                  <option value="online_live">Online Live Video Consult (₹1,000)</option>
-                  <option value="imaging_review">Imaging & MRI Review (₹1,500)</option>
-                  <option value="second_opinion">Surgical Second Opinion (₹2,000)</option>
                 </select>
               </div>
+
+              {/* Service Guidance Banner */}
+              {product === 'consult_48h' && (
+                <div style={{ padding: '0.875rem 1rem', background: 'rgba(10, 110, 110, 0.08)', border: '1px solid rgba(10, 110, 110, 0.25)', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--color-navy)', lineHeight: '1.5' }}>
+                  🎥 <strong>48-Hour Consultation Flow</strong>: Provide details of your medical reports and X-rays below. Dr. Pulak Vatsya will review your submitted materials and send you a personalized <strong>VIDEO RESPONSE within 48 hours</strong>. <em>(Note: This is not a live video call).</em>
+                </div>
+              )}
+
+              {product === 'second_opinion' && (
+                <div style={{ padding: '0.875rem 1rem', background: 'rgba(217, 119, 6, 0.08)', border: '1px solid rgba(217, 119, 6, 0.25)', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--color-navy)', lineHeight: '1.5' }}>
+                  📋 <strong>Second Opinion Requirement</strong>: Please provide one report from another doctor along with the advice/opinion/diagnosis given by that physician below.
+                </div>
+              )}
+
+              {product === 'online_live' && (
+                <div style={{ padding: '0.875rem 1rem', background: 'rgba(14, 165, 233, 0.08)', border: '1px solid rgba(14, 165, 233, 0.25)', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--color-navy)', lineHeight: '1.5' }}>
+                  🩺 <strong>Imaging Review Included</strong>: Comprehensive radiological, X-ray, and MRI report evaluation is fully included under your ₹1,000 Online Video Consultation.
+                </div>
+              )}
+
+              {product === 'international' && (
+                <div style={{ padding: '0.875rem 1rem', background: 'rgba(99, 102, 241, 0.08)', border: '1px solid rgba(99, 102, 241, 0.25)', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--color-navy)', lineHeight: '1.5' }}>
+                  🌍 <strong>International Patient Consult</strong>: Billed securely in $25 USD. Includes digital report review and video consultation session.
+                </div>
+              )}
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>Patient Name</label>
@@ -195,6 +228,29 @@ export default function BookingModal({
                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--color-border)', fontSize: '0.95rem' }}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>
+                  {product === 'consult_48h'
+                    ? 'Medical Reports & X-Ray Details / Links (Optional)'
+                    : product === 'second_opinion'
+                    ? 'Previous Doctor\'s Report & Advice / Diagnosis Details (Optional)'
+                    : 'Symptoms / Medical Notes (Optional)'}
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder={
+                    product === 'consult_48h'
+                      ? 'Describe your knee condition, X-ray findings, or paste secure drive link...'
+                      : product === 'second_opinion'
+                      ? 'Enter details of previous doctor\'s diagnosis, recommended surgery, or report findings...'
+                      : 'Briefly describe your joint pain, symptoms, or medical history...'
+                  }
+                  value={medicalNotes}
+                  onChange={(e) => setMedicalNotes(e.target.value)}
+                  style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--color-border)', fontSize: '0.9rem', resize: 'vertical' }}
+                />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

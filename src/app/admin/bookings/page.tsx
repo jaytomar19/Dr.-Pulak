@@ -149,10 +149,12 @@ function AdminBookingsContent() {
   };
 
   const productLabels: Record<string, string> = {
-    opd: 'OPD Visit',
-    online_live: 'Online Video Consult',
-    imaging_review: 'MRI / X-Ray Review',
-    second_opinion: 'Second Opinion',
+    consult_48h: '48-Hour Video Response (₹500)',
+    online_live: 'Online Video Consult (₹1,000)',
+    second_opinion: 'Second Opinion (₹800)',
+    international: 'International Consult ($25 USD)',
+    opd: 'In-Person OPD Visit (₹1,000)',
+    imaging_review: 'Online Video Consult (₹1,000)',
   };
 
   return (
@@ -189,10 +191,11 @@ function AdminBookingsContent() {
           style={{ padding: '0.5rem 1rem', borderRadius: '8px' }}
         >
           <option value="All">All Consultation Types</option>
-          <option value="opd">OPD Consultation</option>
-          <option value="online_live">Online Live Consult</option>
-          <option value="imaging_review">Imaging Review</option>
-          <option value="second_opinion">Second Opinion</option>
+          <option value="consult_48h">48-Hour Video Response (₹500)</option>
+          <option value="online_live">Online Video Consult (₹1,000)</option>
+          <option value="second_opinion">Second Opinion (₹800)</option>
+          <option value="international">International Consult ($25 USD)</option>
+          <option value="opd">In-Person OPD Visit (₹1,000)</option>
         </select>
       </div>
 

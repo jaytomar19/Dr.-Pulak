@@ -44,8 +44,11 @@ export default function ImagingReviewPage() {
       <Reveal variant="fade-up" delay={200}>
         <TiltCard maxTilt={3} scale={1.01}>
           <section style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-navy)' }}>Review Fee</h3>
-            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-primary)' }}>Standard Imaging Evaluation Rate</p>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-navy)' }}>Consultation Fee</h3>
+            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-primary)' }}>₹1,000 (Included under Online Video Consultation)</p>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginTop: '0.5rem' }}>
+              Radiological evaluation of X-ray, CT, or MRI scans is fully included when you book an Online Consultation. No separate imaging fee is charged.
+            </p>
           </section>
         </TiltCard>
       </Reveal>

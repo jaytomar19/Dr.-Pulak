@@ -9,12 +9,14 @@ const CreateOrderRequestSchema = z.object({
   booking_id: z.string().uuid(),
 });
 
-// Default consultation prices in INR paise (e.g. ₹1000 = 100000 paise)
-const PRODUCT_PRICES_PAISE: Record<string, number> = {
-  opd: 100000,
-  online_live: 100000,
-  imaging_review: 150000,
-  second_opinion: 200000,
+// Authoritative consultation prices in INR paise or USD cents (server-side source of truth)
+const PRODUCT_PRICES_SUBUNITS: Record<string, number> = {
+  consult_48h: 50000,    // ₹500
+  second_opinion: 80000, // ₹800
+  online_live: 100000,   // ₹1,000 (Includes Imaging Review)
+  opd: 100000,           // ₹1,000
+  imaging_review: 100000, // ₹1,000 (Fallback mapped to Online Consultation)
+  international: 2500,   // $25.00 USD (in cents)
 };
 
 export async function POST(req: NextRequest) {
@@ -50,7 +52,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Booking is already paid' }, { status: 400 });
     }
 
-    const amountPaise = PRODUCT_PRICES_PAISE[booking.product] || 100000;
+    const currency = booking.product === 'international' ? 'USD' : 'INR';
+    const amountSubunits = PRODUCT_PRICES_SUBUNITS[booking.product] || 100000;
     const receipt = `rcpt_${booking.booking_id.substring(0, 8)}`;
 
     const patientName = booking.lead.name;
@@ -66,14 +69,19 @@ export async function POST(req: NextRequest) {
       patientEmail = booking.lead.email;
     }
 
-    const razorpayOrder = await createRazorpayOrder(amountPaise, receipt, {
-      booking_id: booking.booking_id,
-      lead_id: booking.lead_id,
-      product: booking.product,
-      patient_name: patientName,
-      patient_email: patientEmail,
-      patient_phone: patientPhone,
-    });
+    const razorpayOrder = await createRazorpayOrder(
+      amountSubunits,
+      receipt,
+      {
+        booking_id: booking.booking_id,
+        lead_id: booking.lead_id,
+        product: booking.product,
+        patient_name: patientName,
+        patient_email: patientEmail,
+        patient_phone: patientPhone,
+      },
+      currency
+    );
 
     // Save payment record and booking provider ref in a transaction
     await prisma.$transaction(async (tx) => {
@@ -89,13 +97,13 @@ export async function POST(req: NextRequest) {
         create: {
           booking_id: booking.booking_id,
           razorpay_order_id: razorpayOrder.id,
-          amount_paise: amountPaise,
-          currency: razorpayOrder.currency || 'INR',
+          amount_paise: amountSubunits,
+          currency: razorpayOrder.currency || currency,
           status: 'PENDING',
         },
         update: {
-          amount_paise: amountPaise,
-          currency: razorpayOrder.currency || 'INR',
+          amount_paise: amountSubunits,
+          currency: razorpayOrder.currency || currency,
           status: 'PENDING',
         },
       });

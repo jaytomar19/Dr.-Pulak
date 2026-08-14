@@ -48,8 +48,11 @@ export default function SecondOpinionPage() {
       <Reveal variant="fade-up" delay={200}>
         <TiltCard maxTilt={3} scale={1.01}>
           <section style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-navy)' }}>Consultation Fee</h3>
-            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-primary)' }}>Standard Second Opinion Rate</p>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-navy)' }}>Second Opinion Fee</h3>
+            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-primary)' }}>₹800</p>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginTop: '0.5rem' }}>
+              <strong>Required Submission</strong>: Please provide one report from another doctor along with the diagnosis and advice given by that physician during booking.
+            </p>
           </section>
         </TiltCard>
       </Reveal>

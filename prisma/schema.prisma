@@ -52,6 +52,8 @@ enum ProductType {
   online_live
   imaging_review
   second_opinion
+  consult_48h
+  international
 }
 
 enum PaymentStatus {

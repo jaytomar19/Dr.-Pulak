@@ -6,11 +6,13 @@ import Stagger from '@/components/shared/Stagger';
 import TiltCard from '@/components/shared/TiltCard';
 import BookingModal from '@/components/public/BookingModal';
 
+import { ConsultationProduct } from '@/components/public/BookingModal';
+
 export default function ConsultPage() {
-  const [selectedProduct, setSelectedProduct] = useState<'opd' | 'online_live' | 'imaging_review' | 'second_opinion' | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ConsultationProduct | null>(null);
 
   const options: Array<{
-    type: 'opd' | 'online_live' | 'imaging_review' | 'second_opinion';
+    type: ConsultationProduct;
     title: string;
     desc: string;
     price: string;
@@ -18,36 +20,36 @@ export default function ConsultPage() {
     cta: string;
   }> = [
     {
-      type: 'opd',
-      title: 'OPD Visit',
-      desc: 'In-person clinical examination and digital imaging review at StepUp Joints, Lajpat Nagar.',
-      price: '₹1,000 Consultation Fee',
-      link: '/consult/opd/',
-      cta: 'Book OPD Appointment',
+      type: 'consult_48h',
+      title: '48-Hour Video Response',
+      desc: 'Upload your medical reports and X-rays. Dr. Pulak Vatsya will review your submitted materials and send you a video response within 48 hours. (Not a live call).',
+      price: '₹500 Consultation Fee',
+      link: '#',
+      cta: 'Book 48-Hour Video Response',
     },
     {
       type: 'online_live',
       title: 'Online Video Consultation',
-      desc: 'Secure live video consultation for remote patients, second opinions, and preliminary evaluation.',
-      price: '₹1,000 Virtual Consult Fee',
+      desc: 'Live interactive video consultation for remote patients. Includes comprehensive MRI, X-ray, and radiological report review at no extra charge.',
+      price: '₹1,000 Consultation Fee',
       link: '/consult/online/',
       cta: 'Book Live Video Consult',
     },
     {
-      type: 'imaging_review',
-      title: 'Imaging & MRI Review',
-      desc: 'Comprehensive radiological assessment of your existing X-rays, CT scans, or MRI reports.',
-      price: '₹1,500 Report Analysis Fee',
-      link: '/consult/imaging-review/',
-      cta: 'Request Imaging Review',
-    },
-    {
       type: 'second_opinion',
       title: 'Surgical Second Opinion',
-      desc: 'Thorough clinical audit before deciding on joint replacement or ligament surgery.',
-      price: '₹2,000 Second Opinion Fee',
+      desc: 'Expert clinical audit before deciding on joint replacement or ligament surgery. Submit previous doctor report and diagnosis for review.',
+      price: '₹800 Second Opinion Fee',
       link: '/consult/second-opinion/',
       cta: 'Get Second Opinion',
+    },
+    {
+      type: 'opd',
+      title: 'In-Person OPD Visit',
+      desc: 'In-person clinical examination and physical joint evaluation at StepUp Joints, Lajpat Nagar 4, New Delhi.',
+      price: '₹1,000 Consultation Fee',
+      link: '/consult/opd/',
+      cta: 'Book OPD Appointment',
     },
   ];
 

@@ -5,7 +5,7 @@ import Loader from '@/components/shared/Loader';
 
 interface RazorpayCheckoutProps {
   bookingId: string;
-  product: 'opd' | 'online_live' | 'imaging_review' | 'second_opinion';
+  product: string;
   patientName?: string;
   patientEmail?: string;
   patientPhone?: string;
@@ -13,11 +13,13 @@ interface RazorpayCheckoutProps {
   onError?: (errorMsg: string) => void;
 }
 
-const PRODUCT_DETAILS: Record<string, { label: string; amountInINR: number }> = {
-  opd: { label: 'In-Person OPD Consultation', amountInINR: 1000 },
-  online_live: { label: 'Online Live Video Consult', amountInINR: 1000 },
-  imaging_review: { label: 'Imaging & MRI Review', amountInINR: 1500 },
-  second_opinion: { label: 'Surgical Second Opinion', amountInINR: 2000 },
+const PRODUCT_DETAILS: Record<string, { label: string; amountDisplay: string }> = {
+  consult_48h: { label: '48-Hour Video Response Consultation', amountDisplay: '₹500' },
+  online_live: { label: 'Online Video Consultation', amountDisplay: '₹1,000' },
+  second_opinion: { label: 'Surgical Second Opinion', amountDisplay: '₹800' },
+  international: { label: 'International Consultation', amountDisplay: '$25 USD' },
+  opd: { label: 'In-Person OPD Consultation', amountDisplay: '₹1,000' },
+  imaging_review: { label: 'Online Video Consultation', amountDisplay: '₹1,000' },
 };
 
 interface RazorpayResponse {
@@ -186,7 +188,7 @@ export default function RazorpayCheckoutButton({
           <Loader size="sm" color="white" label="Opening Payment Gateway..." center={false} />
         ) : (
           <>
-            <span>Pay ₹{productInfo.amountInINR} & Confirm Appointment</span>
+            <span>Pay {productInfo.amountDisplay} & Confirm Appointment</span>
             <span className="btn--pill-icon">↗</span>
           </>
         )}

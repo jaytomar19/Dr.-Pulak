@@ -42,7 +42,7 @@ export type ContactCapture = z.infer<typeof ContactCaptureSchema>;
 
 export const BookingSchema = z.object({
   lead_id: z.string().uuid(),
-  product: z.enum(['opd', 'online_live', 'imaging_review', 'second_opinion']),
+  product: z.enum(['opd', 'online_live', 'imaging_review', 'second_opinion', 'consult_48h', 'international']),
   slot_datetime: z.string().datetime(), // ISO 8601 date string
 });
 export type Booking = z.infer<typeof BookingSchema>;
@@ -87,7 +87,7 @@ export type BookingStatusUpdate = z.infer<typeof BookingStatusUpdateSchema>;
 
 export const CreatePublicBookingSchema = z.object({
   lead_id: z.string().uuid(),
-  product: z.enum(['opd', 'online_live', 'imaging_review', 'second_opinion']),
+  product: z.enum(['opd', 'online_live', 'imaging_review', 'second_opinion', 'consult_48h', 'international']),
   slot_datetime: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid ISO 8601 date string for slot_datetime',
   }),
