@@ -83,9 +83,9 @@ export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boo
     {
       id: 'yt-2',
       videoId: 'TnGw5twNLwY',
-      title: 'ACL Reconstruction: Step-by-Step Rehabilitation Path',
+      title: 'Knee Replacement Surgery',
       youtubeUrl: 'https://youtu.be/TnGw5twNLwY',
-      category: 'Rehabilitation',
+      category: 'Knee Surgery',
       isFeatured: true,
       isPlaceholder: false,
     },
