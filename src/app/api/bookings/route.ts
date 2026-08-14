@@ -155,6 +155,16 @@ export async function GET(req: NextRequest) {
           orderBy: { created_at: 'desc' },
           take: 1,
         },
+        medical_documents: {
+          select: {
+            document_id: true,
+            file_name: true,
+            file_type: true,
+            file_size: true,
+            notes: true,
+            created_at: true,
+          },
+        },
       },
     });
 

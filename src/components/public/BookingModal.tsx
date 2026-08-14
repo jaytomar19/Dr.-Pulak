@@ -30,6 +30,8 @@ export default function BookingModal({
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [medicalNotes, setMedicalNotes] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [slotDate, setSlotDate] = useState(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -106,13 +108,38 @@ export default function BookingModal({
       }
 
       const bookingData = await bookingRes.json();
-      setCreatedBookingId(bookingData.booking_id);
+      const bookingId = bookingData.booking_id;
+      setCreatedBookingId(bookingId);
+
+      // 3. Upload Medical Document (if selected)
+      if (selectedFile) {
+        setUploadStatus('Uploading medical document securely...');
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('lead_id', leadId);
+        formData.append('booking_id', bookingId);
+        if (medicalNotes.trim()) {
+          formData.append('notes', medicalNotes.trim());
+        }
+
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          const uploadErr = await uploadRes.json().catch(() => ({}));
+          console.warn('[BOOKING] File upload warning:', uploadErr.error);
+        }
+      }
+
       setStep('payment');
 
     } catch (err: unknown) {
       setErrorMsg((err as Error).message || 'An error occurred during reservation');
     } finally {
       setIsSubmitting(false);
+      setUploadStatus(null);
     }
   };
 
@@ -253,6 +280,36 @@ export default function BookingModal({
                 />
               </div>
 
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>
+                  📁 Upload Medical Reports / X-Rays / MRI Scans (Optional)
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0.875rem', background: 'var(--color-bg-base)', border: '1.5px dashed var(--color-border)', borderRadius: '12px' }}>
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.webp,.dcm,.zip"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setSelectedFile(e.target.files[0]);
+                      }
+                    }}
+                    style={{ fontSize: '0.85rem', color: 'var(--color-navy)', width: '100%' }}
+                  />
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFile(null)}
+                      style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 700 }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', display: 'block', marginTop: '0.25rem' }}>
+                  Supported formats: PDF, JPG, PNG, WEBP, DICOM, ZIP (Max 15MB)
+                </span>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-navy)', marginBottom: '0.35rem' }}>Appointment Date</label>
@@ -286,7 +343,7 @@ export default function BookingModal({
                 className="btn btn--pill-primary btn--lg"
                 style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem', padding: '0.875rem' }}
               >
-                <span>{isSubmitting ? 'Reserving Slot...' : 'Proceed to Secure Payment'}</span>
+                <span>{isSubmitting ? (uploadStatus || 'Reserving Slot...') : 'Proceed to Secure Payment'}</span>
                 <span className="btn--pill-icon">↗</span>
               </button>
             </form>

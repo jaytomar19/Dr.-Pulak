@@ -123,6 +123,7 @@ model leads {
   consent_records     consent_records[]
   delivery_logs       delivery_log[]
   bookings            bookings[]
+  medical_documents    medical_documents[]
 
   @@index([lead_status])
   @@index([session_id])
@@ -177,8 +178,9 @@ model bookings {
   created_at           DateTime      @default(now())
   updated_at           DateTime      @updatedAt
 
-  lead                 leads         @relation(fields: [lead_id], references: [lead_id])
+  lead                 leads               @relation(fields: [lead_id], references: [lead_id])
   payments             payments[]
+  medical_documents    medical_documents[]
 
   @@index([lead_id])
 }
@@ -217,4 +219,22 @@ model admin_users {
   updated_at    DateTime  @updatedAt
 
   @@index([email])
+}
+
+model medical_documents {
+  document_id String   @id @default(uuid()) @db.Uuid
+  lead_id     String   @db.Uuid
+  booking_id  String?  @db.Uuid
+  file_name   String
+  file_path   String
+  file_type   String
+  file_size   Int
+  notes       String?
+  created_at  DateTime @default(now())
+
+  lead        leads     @relation(fields: [lead_id], references: [lead_id])
+  booking     bookings? @relation(fields: [booking_id], references: [booking_id])
+
+  @@index([lead_id])
+  @@index([booking_id])
 }

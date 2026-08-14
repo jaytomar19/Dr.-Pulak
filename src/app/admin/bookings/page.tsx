@@ -30,6 +30,14 @@ interface BookingItem {
     status: string;
     created_at: string;
   }>;
+  medical_documents?: Array<{
+    document_id: string;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+    notes?: string | null;
+    created_at: string;
+  }>;
 }
 
 interface Pagination {
@@ -234,6 +242,13 @@ function AdminBookingsContent() {
                         ✉️ {b.lead.email}
                       </div>
                     )}
+                    {b.medical_documents && b.medical_documents.length > 0 && (
+                      <div style={{ marginTop: '4px' }}>
+                        <span className="badge badge--teal" style={{ fontSize: '0.725rem', padding: '1px 6px' }}>
+                          📎 {b.medical_documents.length} Medical Doc{b.medical_documents.length > 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    )}
                   </td>
                   <td>
                     <span className="badge badge--neutral">{productLabels[b.product] || b.product}</span>
@@ -348,6 +363,43 @@ function AdminBookingsContent() {
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.25rem' }}>Razorpay Payment ID</label>
                   <code>{activeBooking.payments[0].razorpay_payment_id}</code>
+                </div>
+              )}
+
+              {/* Medical Documents Section */}
+              {activeBooking.medical_documents && activeBooking.medical_documents.length > 0 && (
+                <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid var(--color-border)', borderRadius: '10px' }}>
+                  <label style={{ display: 'block', fontWeight: 700, color: 'var(--color-navy)', marginBottom: '0.75rem' }}>
+                    📁 Uploaded Medical Documents ({activeBooking.medical_documents.length})
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {activeBooking.medical_documents.map((doc) => (
+                      <div key={doc.document_id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 0.8rem', background: 'var(--color-bg-base)', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <div>
+                          <div style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-navy)' }}>
+                            📄 {doc.file_name}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+                            {(doc.file_size / 1024).toFixed(0)} KB &bull; {new Date(doc.created_at).toLocaleDateString()}
+                          </div>
+                          {doc.notes && (
+                            <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '4px', fontStyle: 'italic' }}>
+                              &ldquo;{doc.notes}&rdquo;
+                            </div>
+                          )}
+                        </div>
+                        <a
+                          href={`/api/admin/documents/${doc.document_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn--outline btn--sm"
+                          style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem', textDecoration: 'none' }}
+                        >
+                          View Report ↗
+                        </a>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
