@@ -81,6 +81,7 @@ model assessment_sessions {
   started_at      DateTime    @default(now())
   campaign_source String?
   answers         Json        @default("{}")
+  total_score     Int?
   band_result     BandResult?
   flags           Json        @default("[]")
   completed_at    DateTime?

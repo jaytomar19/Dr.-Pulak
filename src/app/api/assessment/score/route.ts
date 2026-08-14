@@ -18,14 +18,14 @@ export async function POST(req: NextRequest) {
 
     const session = await prisma.assessment_sessions.findUnique({
       where: { session_id: sessionId },
-      select: { answers: true, lead_id: true, completed_at: true, band_result: true, flags: true },
+      select: { answers: true, lead_id: true, completed_at: true, band_result: true, total_score: true, flags: true },
     });
     if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 });
     if (!session.lead_id) return NextResponse.json({ error: 'Contact capture is required before scoring' }, { status: 403 });
 
     // Return cached result if scoring already completed
     if (session.completed_at && session.band_result) {
-      return NextResponse.json({ band: session.band_result, flags: session.flags }, { status: 200 });
+      return NextResponse.json({ band: session.band_result, totalScore: session.total_score, flags: session.flags }, { status: 200 });
     }
 
     const answers = (session.answers && typeof session.answers === 'object' && !Array.isArray(session.answers)
@@ -39,7 +39,12 @@ export async function POST(req: NextRequest) {
 
     await prisma.assessment_sessions.update({
       where: { session_id: sessionId },
-      data: { band_result: score.band, flags: score.flags, completed_at: new Date() },
+      data: {
+        band_result: score.band,
+        total_score: score.totalPoints,
+        flags: score.flags,
+        completed_at: new Date(),
+      },
     });
 
     // Band R urgent internal alert (fire-and-forget — does NOT delay patient response)
@@ -56,7 +61,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ band: score.band, flags: score.flags }, { status: 200 });
+    return NextResponse.json({ band: score.band, totalScore: score.totalPoints, flags: score.flags }, { status: 200 });
   } catch (error) {
     console.error('Error scoring assessment:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

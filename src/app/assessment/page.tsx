@@ -323,11 +323,40 @@ export default function AssessmentPage() {
 
         {screen === 'result' && result && (
           <div key="result" className="assessment-step-content">
-            <h2>Assessment result</h2>
-            <p>{result.summary}</p>
-            <h3>Possible considerations</h3>
-            <ul>{result.possible_causes.map((item) => <li key={item}>{item}</li>)}</ul>
-            <p>{result.next_step}</p>
+            <h2>Clinical Assessment Guidance</h2>
+            <p className="assessment-result-summary" style={{ fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '1.25rem' }}>{result.summary}</p>
+            {result.possible_causes && result.possible_causes.length > 0 && (
+              <>
+                <h3 style={{ fontSize: '1.1rem', marginTop: '1.25rem', marginBottom: '0.5rem' }}>Key Considerations</h3>
+                <ul style={{ paddingLeft: '1.25rem', lineHeight: '1.6', color: 'var(--color-text-secondary)' }}>
+                  {result.possible_causes.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </>
+            )}
+            <div style={{ marginTop: '1.25rem', padding: '1rem', background: 'var(--color-bg-base)', border: '1px solid var(--color-border)', borderRadius: '12px' }}>
+              <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>{result.next_step}</p>
+            </div>
+
+            {/* Render Commercial Consultation CTAs ONLY for normal bands (A, B, C). Suppress for Band R safety */}
+            {result.show_ctas && result.cta_options && result.cta_options.length > 0 && (
+              <div className="assessment-actions" style={{ marginTop: '1.75rem', flexDirection: 'column', gap: '0.75rem' }}>
+                <a
+                  href="/consult/"
+                  className="btn btn--pill-primary btn--lg"
+                  style={{ justifyContent: 'center', width: '100%', textDecoration: 'none' }}
+                  data-cursor="button"
+                >
+                  <span>Book Medical Consultation</span>
+                  <span className="btn--pill-icon">↗</span>
+                </a>
+              </div>
+            )}
+
+            {!result.show_ctas && (
+              <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '12px', color: '#991B1B', fontSize: '0.9rem', lineHeight: '1.5' }}>
+                🩺 <strong>Clinical Evaluation Priority</strong>: Based on your reported symptoms, an immediate clinical evaluation by an orthopaedic specialist is recommended. Commercial booking offers are omitted for your medical safety.
+              </div>
+            )}
           </div>
         )}
 
