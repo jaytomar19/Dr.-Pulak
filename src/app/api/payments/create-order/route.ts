@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { createRazorpayOrder, getRazorpayKeyId, isRazorpayConfigured } from '@/lib/razorpay';
+import { decryptLeadPII } from '@/lib/encryption';
 import { z } from 'zod';
 
 const CreateOrderRequestSchema = z.object({
@@ -52,10 +53,26 @@ export async function POST(req: NextRequest) {
     const amountPaise = PRODUCT_PRICES_PAISE[booking.product] || 100000;
     const receipt = `rcpt_${booking.booking_id.substring(0, 8)}`;
 
+    let patientName = booking.lead.name;
+    let patientPhone = '';
+    let patientEmail = '';
+
+    try {
+      const decrypted = decryptLeadPII({ phone: booking.lead.phone, email: booking.lead.email });
+      patientPhone = decrypted.phone;
+      patientEmail = decrypted.email;
+    } catch {
+      patientPhone = booking.lead.phone;
+      patientEmail = booking.lead.email;
+    }
+
     const razorpayOrder = await createRazorpayOrder(amountPaise, receipt, {
       booking_id: booking.booking_id,
       lead_id: booking.lead_id,
       product: booking.product,
+      patient_name: patientName,
+      patient_email: patientEmail,
+      patient_phone: patientPhone,
     });
 
     // Save payment record and booking provider ref in a transaction
@@ -91,6 +108,9 @@ export async function POST(req: NextRequest) {
       key_id: getRazorpayKeyId(),
       booking_id: booking.booking_id,
       product: booking.product,
+      patient_name: patientName,
+      patient_email: patientEmail,
+      patient_phone: patientPhone,
       is_configured: isRazorpayConfigured(),
     }, { status: 200 });
 

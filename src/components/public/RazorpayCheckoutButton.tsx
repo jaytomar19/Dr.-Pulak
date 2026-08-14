@@ -98,9 +98,9 @@ export default function RazorpayCheckoutButton({
         image: '/images/hero/dr-pulak-hero.jpg',
         order_id: orderData.order_id,
         prefill: {
-          name: patientName,
-          email: patientEmail,
-          contact: patientPhone,
+          name: orderData.patient_name || patientName,
+          email: orderData.patient_email || patientEmail,
+          contact: orderData.patient_phone || patientPhone,
         },
         theme: {
           color: '#2563EB', // Exact MedDocX Electric Royal Blue
