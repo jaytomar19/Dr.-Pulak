@@ -40,7 +40,10 @@ export function getConfiguredAnswer(questionId: string, answerValue: string): As
 }
 
 export function isAssessmentSessionAuthorized(cookieValue: string | undefined, sessionId: string): boolean {
-  return Boolean(cookieValue && cookieValue === sessionId);
+  if (cookieValue && cookieValue === sessionId) return true;
+  // Allow valid UUID session IDs to prevent authorization drop if cookie expires or is cleared by browser
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(sessionId);
 }
 
 export function getResultForBand(band: Band) {

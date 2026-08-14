@@ -40,7 +40,15 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       data: { answers: { ...answers, [parsedBody.data.question_id]: answer } as Prisma.InputJsonValue },
     });
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    const response = NextResponse.json({ success: true }, { status: 200 });
+    response.cookies.set(ASSESSMENT_SESSION_COOKIE, id, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 60 * 60 * 24,
+    });
+    return response;
   } catch (error) {
     console.error('Error updating session:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
