@@ -16,7 +16,7 @@ export default function YouTubeRecentVideos({
   channelName = 'Dr. Pulak Vatsya',
   maxVideos = 3 
 }: YouTubeRecentVideosProps) {
-  const { videos, isPlaceholder } = YOUTUBE_VIDEOS_CONFIG;
+  const { videos, isPlaceholder, channelUrl } = YOUTUBE_VIDEOS_CONFIG;
   const displayVideos = videos.slice(0, maxVideos);
 
   return (
@@ -28,11 +28,10 @@ export default function YouTubeRecentVideos({
             <h2 className="insights-title">Educational Resources & Patient Guidance from {channelName}</h2>
           </div>
           <a
-            href={isPlaceholder ? '#' : 'https://youtube.com'}
+            href={channelUrl}
             className="btn btn--ghost btn--sm insights-link"
-            target={isPlaceholder ? '_self' : '_blank'}
+            target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => isPlaceholder && e.preventDefault()}
             data-cursor="button"
           >
             Visit Video Library →
@@ -50,31 +49,39 @@ export default function YouTubeRecentVideos({
         <Stagger className="insights-grid" staggerInterval={110}>
           {displayVideos.map((video) => (
             <TiltCard key={video.id} maxTilt={3} scale={1.02}>
-              <article className="insights-card" data-cursor="card">
-                <div className="insights-card__media">
-                  {video.videoId ? (
-                    <Image 
-                      src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`} 
-                      alt={video.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="insights-card__thumb"
-                    />
-                  ) : (
-                    <div className="insights-card__placeholder-thumb">
-                      <span>🎬 Video Coming Soon</span>
+              <a
+                href={video.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+              >
+                <article className="insights-card" data-cursor="card">
+                  <div className="insights-card__media">
+                    {video.videoId ? (
+                      <Image 
+                        src={`https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`} 
+                        alt={video.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="insights-card__thumb"
+                        style={{ objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div className="insights-card__placeholder-thumb">
+                        <span>🎬 Video Coming Soon</span>
+                      </div>
+                    )}
+                    <div className="insights-card__play" data-cursor="button">
+                      <span>▶</span>
                     </div>
-                  )}
-                  <div className="insights-card__play" data-cursor="button">
-                    <span>▶</span>
+                    {video.duration && <span className="insights-card__duration">{video.duration}</span>}
                   </div>
-                  {video.duration && <span className="insights-card__duration">{video.duration}</span>}
-                </div>
-                <div className="insights-card__body">
-                  <span className="insights-card__category">{video.category}</span>
-                  <h3 className="insights-card__title">{video.title}</h3>
-                </div>
-              </article>
+                  <div className="insights-card__body">
+                    <span className="insights-card__category">{video.category}</span>
+                    <h3 className="insights-card__title">{video.title}</h3>
+                  </div>
+                </article>
+              </a>
             </TiltCard>
           ))}
         </Stagger>
@@ -82,11 +89,10 @@ export default function YouTubeRecentVideos({
         <Reveal variant="fade-up" delay={150}>
           <div className="insights-bottom-action text-center" style={{ marginTop: '2.5rem' }}>
             <a
-              href={isPlaceholder ? '#' : 'https://youtube.com'}
-              target={isPlaceholder ? '_self' : '_blank'}
+              href={channelUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="btn btn--ghost btn--md"
-              onClick={(e) => isPlaceholder && e.preventDefault()}
               data-cursor="button"
             >
               Browse Full Educational Video Library →

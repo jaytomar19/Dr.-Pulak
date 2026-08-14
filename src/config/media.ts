@@ -67,35 +67,36 @@ export const INSTAGRAM_REELS_CONFIG: { reels: InstagramReel[]; isPlaceholder: bo
   ],
 };
 
-export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boolean } = {
-  isPlaceholder: true,
+export const YOUTUBE_VIDEOS_CONFIG: { videos: YouTubeVideo[]; isPlaceholder: boolean; channelUrl: string } = {
+  isPlaceholder: false,
+  channelUrl: 'https://www.youtube.com/@drpulakvatsya',
   videos: [
     {
-      id: 'yt-placeholder-1',
-      title: 'Understanding Modern Knee Replacement Surgery',
-      youtubeUrl: '#',
+      id: 'yt-1',
+      videoId: 'Gy5ywiHvJ6k',
+      title: 'Understanding Modern Knee & Joint Replacement Surgery',
+      youtubeUrl: 'https://youtu.be/Gy5ywiHvJ6k',
       category: 'Patient Guide',
-      duration: '5:30',
       isFeatured: true,
-      isPlaceholder: true,
+      isPlaceholder: false,
     },
     {
-      id: 'yt-placeholder-2',
+      id: 'yt-2',
+      videoId: 'TnGw5twNLwY',
       title: 'ACL Reconstruction: Step-by-Step Rehabilitation Path',
-      youtubeUrl: '#',
+      youtubeUrl: 'https://youtu.be/TnGw5twNLwY',
       category: 'Rehabilitation',
-      duration: '7:15',
       isFeatured: true,
-      isPlaceholder: true,
+      isPlaceholder: false,
     },
     {
-      id: 'yt-placeholder-3',
-      title: 'Non-Surgical Treatments for Early Knee Osteoarthritis',
-      youtubeUrl: '#',
-      category: 'Conservative Care',
-      duration: '4:45',
+      id: 'yt-3',
+      videoId: '40SASS3OaY8',
+      title: 'Advanced Robotic Knee Surgery & Precision Recovery',
+      youtubeUrl: 'https://youtu.be/40SASS3OaY8',
+      category: 'Robotic Surgery',
       isFeatured: true,
-      isPlaceholder: true,
+      isPlaceholder: false,
     },
   ],
 };
