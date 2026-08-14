@@ -229,7 +229,11 @@ function AdminBookingsContent() {
             </thead>
             <tbody>
               {bookings.map((b) => (
-                <tr key={b.booking_id}>
+                <tr
+                  key={b.booking_id}
+                  onClick={() => handleOpenDrawer(b)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>
                     <strong>{b.lead?.name || 'Patient'}</strong>
                     {b.lead?.phone && (
@@ -243,10 +247,33 @@ function AdminBookingsContent() {
                       </div>
                     )}
                     {b.medical_documents && b.medical_documents.length > 0 && (
-                      <div style={{ marginTop: '4px' }}>
-                        <span className="badge badge--teal" style={{ fontSize: '0.725rem', padding: '1px 6px' }}>
-                          📎 {b.medical_documents.length} Medical Doc{b.medical_documents.length > 1 ? 's' : ''}
-                        </span>
+                      <div style={{ marginTop: '6px' }}>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (b.medical_documents && b.medical_documents.length === 1) {
+                              window.open(`/api/admin/documents/${b.medical_documents[0].document_id}`, '_blank');
+                            } else {
+                              handleOpenDrawer(b);
+                            }
+                          }}
+                          className="badge badge--teal"
+                          style={{
+                            fontSize: '0.775rem',
+                            padding: '3px 8px',
+                            cursor: 'pointer',
+                            border: '1px solid rgba(13, 148, 136, 0.4)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontWeight: 600,
+                          }}
+                          title="Click to view medical document"
+                        >
+                          <span>📎 {b.medical_documents.length} Medical Doc{b.medical_documents.length > 1 ? 's' : ''}</span>
+                          <span style={{ fontSize: '0.7rem', opacity: 0.8 }}>↗</span>
+                        </button>
                       </div>
                     )}
                   </td>
@@ -268,10 +295,23 @@ function AdminBookingsContent() {
                     </span>
                   </td>
                   <td>{new Date(b.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <button className="btn btn--outline btn--sm" onClick={() => handleOpenDrawer(b)}>
-                      Update
-                    </button>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <button className="btn btn--outline btn--sm" onClick={() => handleOpenDrawer(b)}>
+                        View
+                      </button>
+                      {b.medical_documents && b.medical_documents.length > 0 && (
+                        <a
+                          href={`/api/admin/documents/${b.medical_documents[0].document_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn--primary btn--sm"
+                          style={{ padding: '0.3rem 0.65rem', fontSize: '0.75rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
+                        >
+                          📄 Open Doc ↗
+                        </a>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
