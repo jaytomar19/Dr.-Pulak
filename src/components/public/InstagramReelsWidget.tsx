@@ -23,17 +23,18 @@ function ReelCardItem({ reel }: { reel: InstagramReel }) {
           rel="noopener noreferrer"
           style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
         >
-          <div className="reel-card__aspect" style={{ position: 'relative', overflow: 'hidden', background: '#0F172A' }}>
+          <div className="reel-card__aspect" style={{ position: 'relative', overflow: 'hidden', background: '#0B192C', aspectRatio: '9 / 15' }}>
             {reel.reelId && (
               <iframe
                 src={`https://www.instagram.com/reel/${reel.reelId}/embed/`}
                 title={reel.title}
                 style={{
                   position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
+                  top: '50%',
+                  left: '50%',
+                  width: '122%',
+                  height: '136%',
+                  transform: 'translate(-50%, -50%)',
                   border: 0,
                   pointerEvents: isHovered ? 'auto' : 'none',
                 }}
