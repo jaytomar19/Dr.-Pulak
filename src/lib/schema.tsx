@@ -1,4 +1,5 @@
 import React from 'react';
+import { PRACTICE_CONFIG } from '@/config/practice';
 
 const defaultBaseUrl = 'https://drpulakvatsya.com';
 
@@ -6,28 +7,34 @@ export function generatePhysicianSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Physician',
-    name: 'Dr. Pulak Vatsya',
-    medicalSpecialty: 'Orthopaedic Surgery',
+    name: PRACTICE_CONFIG.doctorName,
+    medicalSpecialty: PRACTICE_CONFIG.specialty,
     practiceLocation: {
       '@type': 'MedicalClinic',
-      name: 'StepUp Joints',
+      name: PRACTICE_CONFIG.clinicName,
       address: {
         '@type': 'PostalAddress',
+        streetAddress: PRACTICE_CONFIG.fullAddress,
         addressLocality: 'Lajpat Nagar',
         addressRegion: 'New Delhi',
+        postalCode: '110024',
         addressCountry: 'IN',
       },
     },
     address: {
       '@type': 'PostalAddress',
+      streetAddress: PRACTICE_CONFIG.fullAddress,
       addressLocality: 'Lajpat Nagar',
       addressRegion: 'New Delhi',
+      postalCode: '110024',
       addressCountry: 'IN',
     },
-    telephone: '+91-0000000000', // placeholder
+    telephone: PRACTICE_CONFIG.phone,
+    email: PRACTICE_CONFIG.email,
     url: defaultBaseUrl,
     sameAs: [
-      'https://www.linkedin.com/in/drpulakvatsya/', // placeholder
+      'https://www.youtube.com/@drpulakvatsyaortho',
+      'https://www.instagram.com/dr.pulakvatsya/',
     ],
   };
 }
@@ -36,21 +43,23 @@ export function generateMedicalClinicSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'MedicalClinic',
-    name: 'StepUp Joints',
+    name: PRACTICE_CONFIG.clinicName,
     address: {
       '@type': 'PostalAddress',
+      streetAddress: PRACTICE_CONFIG.fullAddress,
       addressLocality: 'Lajpat Nagar',
       addressRegion: 'New Delhi',
+      postalCode: '110024',
       addressCountry: 'IN',
     },
-    telephone: '+91-0000000000', // placeholder
-    openingHours: 'Mo-Sa 09:00-18:00', // placeholder
+    telephone: PRACTICE_CONFIG.phone,
+    email: PRACTICE_CONFIG.email,
+    url: defaultBaseUrl,
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: '28.5684', // placeholder
-      longitude: '77.2435', // placeholder
+      latitude: '28.5684',
+      longitude: '77.2435',
     },
-    url: defaultBaseUrl,
   };
 }
 
@@ -58,17 +67,20 @@ export function generateLocalBusinessSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: 'StepUp Joints',
+    name: PRACTICE_CONFIG.clinicName,
     address: {
       '@type': 'PostalAddress',
+      streetAddress: PRACTICE_CONFIG.fullAddress,
       addressLocality: 'Lajpat Nagar',
       addressRegion: 'New Delhi',
+      postalCode: '110024',
       addressCountry: 'IN',
     },
-    telephone: '+91-0000000000',
-    openingHours: 'Mo-Sa 09:00-18:00',
+    telephone: PRACTICE_CONFIG.phone,
+    email: PRACTICE_CONFIG.email,
     priceRange: '₹₹',
-    image: `${defaultBaseUrl}/placeholder.jpg`, // placeholder
+    image: `${defaultBaseUrl}/images/hero/dr-pulak-hero.jpg`,
+    url: defaultBaseUrl,
   };
 }
 
@@ -81,7 +93,7 @@ export function generateMedicalWebPageSchema(title: string, description: string,
     url: url,
     publisher: {
       '@type': 'Organization',
-      name: 'StepUp Joints',
+      name: PRACTICE_CONFIG.clinicName,
     },
   };
 }
@@ -124,11 +136,11 @@ export function generateArticleSchema(title: string, description: string, url: s
     datePublished: datePublished,
     author: {
       '@type': 'Person',
-      name: 'Dr. Pulak Vatsya',
+      name: PRACTICE_CONFIG.doctorName,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'StepUp Joints',
+      name: PRACTICE_CONFIG.clinicName,
     },
   };
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAssessmentModal } from '@/context/AssessmentModalContext';
 
 interface StickyMobileCTAProps {
   primaryAction?: 'assessment' | 'call' | 'whatsapp';
@@ -13,6 +14,7 @@ export default function StickyMobileCTA({
 }: StickyMobileCTAProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { openAssessmentModal } = useAssessmentModal();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,10 +37,15 @@ export default function StickyMobileCTA({
         <Link href="/consult/" className="sticky-cta__button sticky-cta__button--primary">
           Book Consultation
         </Link>
-        <Link href="/knee-check/" className="sticky-cta__button sticky-cta__button--secondary">
+        <button
+          type="button"
+          onClick={openAssessmentModal}
+          className="sticky-cta__button sticky-cta__button--secondary"
+        >
           Free Knee Check
-        </Link>
+        </button>
       </div>
     </div>
   );
 }
+

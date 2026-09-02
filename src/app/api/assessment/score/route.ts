@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { ASSESSMENT_SESSION_COOKIE, assessmentQuestions, isAssessmentSessionAuthorized, type AssessmentAnswers } from '@/lib/assessment';
+import { ASSESSMENT_SESSION_COOKIE, isAssessmentSessionAuthorized, type AssessmentAnswers } from '@/lib/assessment';
 import { scoreAssessment } from '@/lib/scoring';
 import { ScoreRequestSchema } from '@/lib/validators';
 import { sendBandRAlert } from '@/lib/notifications';
@@ -31,9 +31,6 @@ export async function POST(req: NextRequest) {
     const answers = (session.answers && typeof session.answers === 'object' && !Array.isArray(session.answers)
       ? session.answers
       : {}) as AssessmentAnswers;
-    if (!assessmentQuestions.every((question) => answers[question.id])) {
-      return NextResponse.json({ error: 'All assessment questions must be completed before scoring' }, { status: 400 });
-    }
 
     const score = scoreAssessment(answers);
 

@@ -53,8 +53,10 @@ export default function YouTubeRecentVideos({
                 href={video.youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                className="insights-card-link"
+                style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', flex: 1, height: '100%' }}
               >
+
                 <article className="insights-card" data-cursor="card">
                   <div className="insights-card__media">
                     {video.videoId ? (

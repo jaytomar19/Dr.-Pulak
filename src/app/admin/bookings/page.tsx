@@ -157,12 +157,12 @@ function AdminBookingsContent() {
   };
 
   const productLabels: Record<string, string> = {
+    opd: 'In-Person OPD Visit (₹1,299)',
     consult_48h: '48-Hour Video Response (₹500)',
-    online_live: 'Online Video Consult (₹1,000)',
-    second_opinion: 'Second Opinion (₹800)',
-    international: 'International Consult ($25 USD)',
-    opd: 'In-Person OPD Visit (₹1,000)',
-    imaging_review: 'Online Video Consult (₹1,000)',
+    online_live: 'Online Live Video Consult (₹999)',
+    second_opinion: 'Surgical Second Opinion (₹799)',
+    international: 'International Consult (₹2,199)',
+    imaging_review: '48-Hour Video Response (₹500)',
   };
 
   return (
@@ -199,11 +199,11 @@ function AdminBookingsContent() {
           style={{ padding: '0.5rem 1rem', borderRadius: '8px' }}
         >
           <option value="All">All Consultation Types</option>
+          <option value="opd">In-Person OPD Visit (₹1,299)</option>
           <option value="consult_48h">48-Hour Video Response (₹500)</option>
-          <option value="online_live">Online Video Consult (₹1,000)</option>
-          <option value="second_opinion">Second Opinion (₹800)</option>
-          <option value="international">International Consult ($25 USD)</option>
-          <option value="opd">In-Person OPD Visit (₹1,000)</option>
+          <option value="online_live">Online Live Video Consult (₹999)</option>
+          <option value="second_opinion">Surgical Second Opinion (₹799)</option>
+          <option value="international">International Consult (₹2,199)</option>
         </select>
       </div>
 

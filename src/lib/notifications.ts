@@ -183,11 +183,24 @@ async function logDelivery(
   channel: DeliveryChannel,
   template_name: string,
   status: DeliveryStatus,
-  retry_count: number = 0
+  retry_count: number = 0,
+  provider_message_id?: string | null,
+  provider?: string | null
 ): Promise<void> {
   try {
+    const now = new Date();
     await prisma.delivery_log.create({
-      data: { lead_id, channel, template_name, status, retry_count },
+      data: {
+        lead_id,
+        channel,
+        template_name,
+        status,
+        retry_count,
+        provider: provider || null,
+        provider_message_id: provider_message_id || null,
+        delivered_at: status === DeliveryStatus.delivered ? now : null,
+        failed_at: status === DeliveryStatus.failed ? now : null,
+      },
     });
   } catch (err) {
     console.error('[NOTIF] Failed to write delivery_log:', err);
@@ -243,7 +256,7 @@ export async function sendBandRAlert(
   });
 
   const status = result.success ? DeliveryStatus.sent : DeliveryStatus.failed;
-  await logDelivery(lead_id, DeliveryChannel.email, 'band_r_internal_alert', status);
+  await logDelivery(lead_id, DeliveryChannel.email, 'band_r_internal_alert', status, 0, result.success ? result.provider_message_id : null, 'postmark');
 
   if (!result.success) {
     console.error(
@@ -275,10 +288,12 @@ export async function sendBookingConfirmationToStaff(
   }
 
   const productLabel: Record<string, string> = {
-    opd: 'OPD Consultation',
-    online_live: 'Online Live Consultation',
-    imaging_review: 'Imaging Review',
-    second_opinion: 'Second Opinion',
+    opd: 'In-Person OPD Visit',
+    online_live: 'Online Live Video Consultation',
+    consult_48h: '48-Hour Video Response',
+    imaging_review: '48-Hour Video Response',
+    second_opinion: 'Surgical Second Opinion',
+    international: 'International Consultation',
   };
 
   const result = await sendEmailPostmark({
@@ -297,7 +312,7 @@ export async function sendBookingConfirmationToStaff(
   });
 
   const status = result.success ? DeliveryStatus.sent : DeliveryStatus.failed;
-  await logDelivery(lead_id, DeliveryChannel.email, 'booking_confirmation_staff', status);
+  await logDelivery(lead_id, DeliveryChannel.email, 'booking_confirmation_staff', status, 0, result.success ? result.provider_message_id : null, 'postmark');
 }
 
 /**
@@ -334,7 +349,7 @@ export async function sendPaymentConfirmedToStaff(
   });
 
   const status = result.success ? DeliveryStatus.sent : DeliveryStatus.failed;
-  await logDelivery(lead_id, DeliveryChannel.email, 'booking_payment_confirmed', status);
+  await logDelivery(lead_id, DeliveryChannel.email, 'booking_payment_confirmed', status, 0, result.success ? result.provider_message_id : null, 'postmark');
 }
 
 /**
@@ -432,10 +447,12 @@ export async function sendWhatsAppBookingConfirmationToClinic(bookingId: string)
     }
 
     const productLabels: Record<string, string> = {
-      opd: 'In-Person OPD Consultation',
-      online_live: 'Online Video Consult',
-      imaging_review: 'Imaging & MRI Review',
+      opd: 'In-Person OPD Visit',
+      online_live: 'Online Live Video Consultation',
+      consult_48h: '48-Hour Video Response',
+      imaging_review: '48-Hour Video Response',
       second_opinion: 'Surgical Second Opinion',
+      international: 'International Consultation',
     };
 
     const recipientNumber = process.env.WHATSAPP_RECIPIENT_NUMBER || process.env.CLINIC_WHATSAPP_NUMBER || '+919876543210';
@@ -487,7 +504,7 @@ export async function sendWhatsAppBookingConfirmationToClinic(bookingId: string)
     const status = result.success ? DeliveryStatus.sent : DeliveryStatus.failed;
 
     // 5. Record Delivery Log
-    await logDelivery(booking.lead_id, DeliveryChannel.whatsapp, 'clinic_booking_whatsapp_alert', status);
+    await logDelivery(booking.lead_id, DeliveryChannel.whatsapp, 'clinic_booking_whatsapp_alert', status, 0, result.success ? result.provider_message_id : null, process.env.WHATSAPP_BSP_PROVIDER || 'meta');
 
   } catch (err) {
     console.error('[NOTIF_WA] WhatsApp notification dispatch exception:', err);

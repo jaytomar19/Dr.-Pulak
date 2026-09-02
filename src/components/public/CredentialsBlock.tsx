@@ -27,21 +27,29 @@ export default function CredentialsBlock() {
 
   return (
     <section className="philosophy-section">
-      <div className="container">
+      {/* Background depth glow */}
+      <div className="philosophy-bg-glow" aria-hidden="true" />
+
+      <div className="container" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Reveal variant="fade-up" className="philosophy-header">
-          <span className="eyebrow eyebrow--gold">PRACTICE PHILOSOPHY</span>
+          <span className="eyebrow" style={{ color: 'var(--color-primary)', fontWeight: 700, display: 'block', textAlign: 'center', marginBottom: '0.5rem' }}>
+            PRACTICE PHILOSOPHY
+          </span>
           <h2 className="philosophy-title">Patient-Centered Knee Care Founded on Clinical Integrity</h2>
           <p className="philosophy-subtitle">
             Providing evidence-based orthopaedic care in South Delhi with a steadfast commitment to patient education and non-surgical preservation.
           </p>
         </Reveal>
 
-        <Stagger className="philosophy-grid" staggerInterval={90}>
+        <Stagger className="philosophy-grid" staggerInterval={100}>
           {pillars.map((pillar, idx) => (
             <div key={idx} className="philosophy-card" data-cursor="card">
-              <span className="philosophy-card__num">{pillar.step}</span>
+              <div className="philosophy-card__num-badge">
+                <span>{pillar.step}</span>
+              </div>
               <h3 className="philosophy-card__title">{pillar.title}</h3>
               <p className="philosophy-card__desc">{pillar.desc}</p>
+              <div className="philosophy-card__accent-bar" />
             </div>
           ))}
         </Stagger>

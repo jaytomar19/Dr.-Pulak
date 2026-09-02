@@ -35,12 +35,13 @@ export default function SecondOpinionPage() {
 
       <Reveal variant="fade-up" delay={140}>
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>What&apos;s Included</h2>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>What Can Be Reviewed</h2>
           <ul style={{ color: 'var(--color-text-secondary)', paddingLeft: '1.5rem', marginBottom: '1rem', lineHeight: '1.8' }}>
-            <li>In-depth review of your complete medical history and all imaging scans.</li>
-            <li>Detailed clinical discussion of your diagnosis.</li>
-            <li>Exploration of all viable treatment pathways (surgical and conservative).</li>
-            <li>A comprehensive written summary of the clinical recommendations.</li>
+            <li>Previous diagnosis and clinical findings</li>
+            <li>Treatment advice and conservative care options</li>
+            <li>X-rays, MRI scans, and diagnostic reports</li>
+            <li>Existing surgical recommendations</li>
+            <li>Relevant clinical information and medical history</li>
           </ul>
         </section>
       </Reveal>
@@ -49,9 +50,9 @@ export default function SecondOpinionPage() {
         <TiltCard maxTilt={3} scale={1.01}>
           <section style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
             <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-navy)' }}>Second Opinion Fee</h3>
-            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-primary)' }}>₹800</p>
+            <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-primary)' }}>₹799</p>
             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginTop: '0.5rem' }}>
-              <strong>Required Submission</strong>: Please provide one report from another doctor along with the diagnosis and advice given by that physician during booking.
+              An independent clinical review for patients advised to undergo surgery who want specialist clarity before deciding.
             </p>
           </section>
         </TiltCard>

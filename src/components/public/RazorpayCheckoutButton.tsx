@@ -14,12 +14,12 @@ interface RazorpayCheckoutProps {
 }
 
 const PRODUCT_DETAILS: Record<string, { label: string; amountDisplay: string }> = {
-  consult_48h: { label: '48-Hour Video Response Consultation', amountDisplay: '₹500' },
-  online_live: { label: 'Online Video Consultation', amountDisplay: '₹1,000' },
-  second_opinion: { label: 'Surgical Second Opinion', amountDisplay: '₹800' },
-  international: { label: 'International Consultation', amountDisplay: '$25 USD' },
-  opd: { label: 'In-Person OPD Consultation', amountDisplay: '₹1,000' },
-  imaging_review: { label: 'Online Video Consultation', amountDisplay: '₹1,000' },
+  opd: { label: 'In-Person OPD Visit', amountDisplay: '₹1,299' },
+  consult_48h: { label: '48-Hour Video Response', amountDisplay: '₹500' },
+  online_live: { label: 'Online Live Video Consultation', amountDisplay: '₹999' },
+  second_opinion: { label: 'Surgical Second Opinion', amountDisplay: '₹799' },
+  international: { label: 'International Consultation', amountDisplay: '₹2,199' },
+  imaging_review: { label: '48-Hour Video Response', amountDisplay: '₹500' },
 };
 
 interface RazorpayResponse {

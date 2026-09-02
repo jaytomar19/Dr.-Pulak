@@ -7,6 +7,7 @@ import { enforceRole } from '@/lib/rbac';
 import { BookingStatus, PaymentStatus, ProductType, Prisma } from '@prisma/client';
 import { sendBookingConfirmationToStaff } from '@/lib/notifications';
 import { decryptLeadPII } from '@/lib/encryption';
+import { validateRequestedSlot } from '@/lib/availability';
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,14 +27,18 @@ export async function POST(req: NextRequest) {
     }
 
     const { lead_id, product, slot_datetime } = parsed.data;
-    const slotDate = new Date(slot_datetime);
 
-    // Ensure slot_datetime is in the future
-    if (slotDate <= new Date()) {
-      return NextResponse.json({ error: 'Appointment time must be in the future' }, { status: 400 });
+    // 1. Strict Server-Side Doctor Availability & Slot Validation
+    const slotValidation = await validateRequestedSlot(slot_datetime, product);
+    if (!slotValidation.valid) {
+      return NextResponse.json({
+        error: slotValidation.error || 'Requested slot is unavailable',
+      }, { status: 400 });
     }
 
-    // Verify linked lead exists
+    const slotDate = new Date(slot_datetime);
+
+    // 2. Verify linked lead exists
     const leadExists = await prisma.leads.findUnique({
       where: { lead_id },
       select: { lead_id: true, name: true },
@@ -43,27 +48,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Lead record not found' }, { status: 404 });
     }
 
-    // Check for duplicate active booking for the same lead at the same time
-    const existingBooking = await prisma.bookings.findFirst({
-      where: {
-        lead_id,
-        slot_datetime: slotDate,
-        status: { in: [BookingStatus.confirmed, BookingStatus.rescheduled] },
-      },
-    });
-
-    if (existingBooking) {
-      return NextResponse.json({ error: 'An active booking already exists for this time slot' }, { status: 409 });
-    }
-
-    // Create booking and update lead status in a transaction
+    // 3. Race Condition / Double Booking Protection within Database Transaction
     const booking = await prisma.$transaction(async (tx) => {
+      // Re-verify no active booking exists for the exact same slot datetime
+      const existingSlotBooking = await tx.bookings.findFirst({
+        where: {
+          slot_datetime: slotDate,
+          status: { in: [BookingStatus.confirmed, BookingStatus.rescheduled, BookingStatus.completed] },
+        },
+      });
+
+      if (existingSlotBooking) {
+        throw new Error('SLOT_ALREADY_BOOKED');
+      }
+
       const newBooking = await tx.bookings.create({
         data: {
           lead_id,
           product: product as ProductType,
           slot_datetime: slotDate,
-          payment_status: PaymentStatus.pending, // Always pending server-side initially
+          payment_status: PaymentStatus.pending,
           status: BookingStatus.confirmed,
         },
       });
@@ -97,7 +101,11 @@ export async function POST(req: NextRequest) {
       created_at: booking.created_at.toISOString(),
     }, { status: 201 });
 
-  } catch (error) {
+  } catch (error: unknown) {
+    if ((error as Error).message === 'SLOT_ALREADY_BOOKED') {
+      return NextResponse.json({ error: 'This slot has just been reserved by another patient. Please choose a different time slot.' }, { status: 409 });
+    }
+
     console.error('Error creating booking:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

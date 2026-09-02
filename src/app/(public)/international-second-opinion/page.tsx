@@ -36,7 +36,7 @@ export default function InternationalSecondOpinionPage() {
 
       <section style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
         <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>International Consultation Fee</h3>
-        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>$25 USD</p>
+        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>₹2,199</p>
       </section>
 
       <div style={{ marginTop: '3rem' }}>

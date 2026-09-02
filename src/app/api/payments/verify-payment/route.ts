@@ -131,11 +131,13 @@ export async function POST(req: NextRequest) {
     });
 
     // 5. Non-blocking staff notifications (Email + WhatsApp)
+    const confirmedAmount = booking.payments[0]?.amount_paise || 99900;
+
     void sendPaymentConfirmedToStaff(
       booking.lead_id,
       booking.booking_id,
       booking.product,
-      100000
+      confirmedAmount
     ).catch((err) => console.error('[NOTIF] Payment verification email dispatch failed:', err));
 
     void sendWhatsAppBookingConfirmationToClinic(booking.booking_id)

@@ -45,9 +45,17 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Redirects for legacy URLs (placeholder — add 301s here before launch)
+  // Redirects for legacy URLs to canonical route architecture
   async redirects() {
-    return [];
+    return [
+      { source: '/knee-replacement', destination: '/treatments/knee-replacement/', permanent: true },
+      { source: '/acl', destination: '/treatments/acl-surgery/', permanent: true },
+      { source: '/knee-pain', destination: '/treatments/knee-pain/', permanent: true },
+      { source: '/knee-check', destination: '/knee-reset/', permanent: true },
+      { source: '/consult/imaging-review', destination: '/consult/xray-mri-review/', permanent: true },
+      { source: '/international-second-opinion', destination: '/consult/international/', permanent: true },
+      { source: '/blog', destination: '/insights/', permanent: true },
+    ];
   },
 };
 

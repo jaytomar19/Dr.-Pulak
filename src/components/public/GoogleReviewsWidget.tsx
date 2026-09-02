@@ -36,9 +36,7 @@ export default function GoogleReviewsWidget({ maxReviews = 3 }: GoogleReviewsWid
           <span className="eyebrow">PATIENT FEEDBACK</span>
           <h2 className="reviews-title">Recognized for Patient Education & Ethical Care</h2>
           <div className="reviews-summary">
-            <span className="reviews-stars">★★★★★</span>
-            <span className="reviews-score">4.9 / 5.0 Rating</span>
-            <span className="reviews-count">· Google Business Reviews</span>
+            <span className="reviews-count">Patient Feedback & Consultation Reviews</span>
           </div>
         </Reveal>
 
@@ -46,7 +44,6 @@ export default function GoogleReviewsWidget({ maxReviews = 3 }: GoogleReviewsWid
           {reviews.map((review, idx) => (
             <div key={idx} className="reviews-card" data-cursor="card">
               <div className="reviews-card__top">
-                <span className="reviews-card__stars">★★★★★</span>
                 <span className="reviews-card__date">{review.date}</span>
               </div>
               <p className="reviews-card__text">&ldquo;{review.text}&rdquo;</p>

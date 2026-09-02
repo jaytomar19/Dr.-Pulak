@@ -145,18 +145,23 @@ model consent_records {
 }
 
 model delivery_log {
-  id            String         @id @default(uuid()) @db.Uuid
-  lead_id       String         @db.Uuid
-  channel       DeliveryChannel
-  template_name String?
-  status        DeliveryStatus
-  attempted_at  DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-  retry_count   Int            @default(0)
+  id                  String          @id @default(uuid()) @db.Uuid
+  lead_id             String          @db.Uuid
+  channel             DeliveryChannel
+  provider            String?
+  provider_message_id String?         @unique
+  template_name       String?
+  status              DeliveryStatus
+  attempted_at        DateTime        @default(now())
+  delivered_at        DateTime?
+  failed_at           DateTime?
+  updated_at          DateTime        @updatedAt
+  retry_count         Int             @default(0)
 
-  lead          leads          @relation(fields: [lead_id], references: [lead_id])
+  lead                leads           @relation(fields: [lead_id], references: [lead_id])
 
   @@index([lead_id])
+  @@index([provider_message_id])
 }
 
 enum PaymentState {
@@ -239,3 +244,41 @@ model medical_documents {
   @@index([lead_id])
   @@index([booking_id])
 }
+
+model doctor_schedules {
+  schedule_id   String   @id @default(uuid()) @db.Uuid
+  day_of_week   Int      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  start_time    String   // "10:00"
+  end_time      String   // "18:00"
+  slot_duration Int      @default(30) // in minutes
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([day_of_week])
+}
+
+model doctor_availability {
+  availability_id String   @id @default(uuid()) @db.Uuid
+  date            DateTime @db.Date // Specific date
+  start_time      String   // "10:00"
+  end_time        String   // "18:00"
+  slot_duration   Int      @default(30)
+  is_available    Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@index([date])
+}
+
+model blocked_slots {
+  block_id   String   @id @default(uuid()) @db.Uuid
+  title      String?  // Reason / title e.g. "Personal", "Holiday"
+  start_time DateTime @db.Timestamptz
+  end_time   DateTime @db.Timestamptz
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([start_time, end_time])
+}
+

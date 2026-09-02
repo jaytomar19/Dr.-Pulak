@@ -9,14 +9,14 @@ const CreateOrderRequestSchema = z.object({
   booking_id: z.string().uuid(),
 });
 
-// Authoritative consultation prices in INR paise or USD cents (server-side source of truth)
+// Authoritative consultation prices in INR paise (server-side source of truth)
 const PRODUCT_PRICES_SUBUNITS: Record<string, number> = {
+  opd: 129900,           // ₹1,299
   consult_48h: 50000,    // ₹500
-  second_opinion: 80000, // ₹800
-  online_live: 100000,   // ₹1,000 (Includes Imaging Review)
-  opd: 100000,           // ₹1,000
-  imaging_review: 100000, // ₹1,000 (Fallback mapped to Online Consultation)
-  international: 2500,   // $25.00 USD (in cents)
+  online_live: 99900,    // ₹999
+  second_opinion: 79900, // ₹799
+  international: 219900, // ₹2,199
+  imaging_review: 50000, // ₹500 (Mapped to 48-Hour Video Response)
 };
 
 export async function POST(req: NextRequest) {
@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Booking is already paid' }, { status: 400 });
     }
 
-    const currency = booking.product === 'international' ? 'USD' : 'INR';
-    const amountSubunits = PRODUCT_PRICES_SUBUNITS[booking.product] || 100000;
+    const currency = 'INR';
+    const amountSubunits = PRODUCT_PRICES_SUBUNITS[booking.product] || 99900;
     const receipt = `rcpt_${booking.booking_id.substring(0, 8)}`;
 
     const patientName = booking.lead.name;

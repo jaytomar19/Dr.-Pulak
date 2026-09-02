@@ -18,7 +18,9 @@ function AdminSidebar({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val:
     { href: '/admin/leads', label: 'Leads' },
     { href: '/admin/assessments', label: 'Assessments' },
     { href: '/admin/bookings', label: 'Bookings' },
+    { href: '/admin/availability', label: 'Availability' },
     { href: '/admin/assessment-config', label: 'Config' },
+
     { href: '/admin/alerts', label: 'Alerts' },
     { href: '/admin/delivery', label: 'Delivery' },
     { href: '/admin/analytics', label: 'Analytics' },

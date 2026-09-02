@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState, useCallback } from 'react';
 import questionsConfig from '@/config/questions.config.json';
 import {
   trackAssessmentStart,
@@ -10,11 +10,8 @@ import {
   trackResultView,
 } from '@/lib/analytics';
 import Loader from '@/components/shared/Loader';
+import BookingModal from '@/components/public/BookingModal';
 import './assessment.css';
-
-// Metadata is exported from a sibling server component when using the App Router;
-// for client components it is declared in the nearest server layout or via generateMetadata.
-// The metadata for this route is configured in layout.tsx at the assessment segment level.
 
 type Screen = 'intro' | 'q1' | 'q2' | 'q3' | 'q4' | 'q5' | 'q6' | 'q7' | 'q8' | 'contact_capture' | 'q9' | 'completion' | 'result';
 type Answers = Record<string, string>;
@@ -44,8 +41,6 @@ function getResumeScreen(answers: Answers, hasContact: boolean): Screen {
 }
 
 export default function AssessmentPage() {
-  // Read sessionStorage once at mount (lazy initialisers avoid setState-in-effect).
-  // Using functions here means this runs only on the initial render, not on every re-render.
   const [savedSession] = useState<{ sessionId: string; answers: Answers; hasContact: boolean } | null>(() => {
     if (typeof window === 'undefined') return null;
     try {
@@ -69,18 +64,18 @@ export default function AssessmentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const question = useMemo(
     () => questions.find((candidate) => candidate.id === screen),
     [screen],
   );
-  const questionNumber = question?.order ?? (screen === 'contact_capture' ? 8 : screen === 'completion' || screen === 'result' ? 9 : 0);
-  const progress = Math.min(100, (questionNumber / questions.length) * 100);
 
-  // GA4: Track contact capture view when screen transitions to contact_capture
-  useEffect(() => {
-    if (screen === 'contact_capture') trackCaptureView();
-  }, [screen]);
+  const [activeSelection, setActiveSelection] = useState<Record<string, string>>({});
+  const selectedOption = question ? (activeSelection[question.id] || answers[question.id] || null) : null;
+
+  const questionNumber = question?.order ?? (screen === 'contact_capture' ? 8 : screen === 'completion' || screen === 'result' ? 9 : 0);
+  const progress = Math.min(100, Math.round((questionNumber / questions.length) * 100));
 
   const saveSession = (nextSessionId: string, nextAnswers: Answers, nextHasContact: boolean) => {
     window.sessionStorage.setItem(sessionStorageKey, JSON.stringify({
@@ -90,7 +85,7 @@ export default function AssessmentPage() {
     }));
   };
 
-  const start = async () => {
+  const start = useCallback(async () => {
     setError(null);
     if (sessionId && resumeAvailable) {
       setScreen(getResumeScreen(answers, hasContact));
@@ -113,14 +108,34 @@ export default function AssessmentPage() {
       saveSession(data.session_id, {}, false);
       setScreen('q1');
 
-      // GA4: assessment_start — fired once per new session, no PII
       trackAssessmentStart();
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'Unable to start the assessment');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [sessionId, resumeAvailable, answers, hasContact]);
+
+  // Automatically start assessment on mount if screen is 'intro' (removes duplicate intro/loading card)
+  useEffect(() => {
+    let mounted = true;
+    if (screen === 'intro') {
+      const init = async () => {
+        if (!mounted) return;
+        await start();
+      };
+      init();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [screen, start]);
+
+
+  // GA4: Track contact capture view when screen transitions to contact_capture
+  useEffect(() => {
+    if (screen === 'contact_capture') trackCaptureView();
+  }, [screen]);
 
   const submitAnswer = async (answerValue: string) => {
     if (!sessionId || !question) return;
@@ -130,18 +145,22 @@ export default function AssessmentPage() {
       const response = await fetch(`/api/assessment/session/${sessionId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        // NOTE: answerValue is the config key (e.g. "opt_a"), NOT clinical text — safe to send.
-        // However we do NOT include it in GA4 params per spec §10 hard constraint.
         body: JSON.stringify({ question_id: question.id, answer_value: answerValue }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error ?? 'Unable to save your response');
+
+      if (!response.ok) {
+        if (data.error === 'Assessment is already complete' || response.status === 409) {
+          await loadResult(sessionId);
+          return;
+        }
+        throw new Error(data.error ?? 'Unable to save your response');
+      }
 
       const nextAnswers = { ...answers, [question.id]: answerValue };
       setAnswers(nextAnswers);
       saveSession(sessionId, nextAnswers, hasContact);
 
-      // GA4: assessment_question_complete — question_number only, no answer value or clinical content
       trackQuestionComplete(question.order);
 
       if (question.order === 8) {
@@ -155,6 +174,36 @@ export default function AssessmentPage() {
       setError(caughtError instanceof Error ? caughtError.message : 'Unable to save your response');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleNext = async () => {
+    if (!question) return;
+    const optionToSubmit = selectedOption || answers[question.id];
+    if (question.order === 9) {
+      if (optionToSubmit) {
+        await submitAnswer(optionToSubmit);
+      } else {
+        await loadResult(sessionId ?? undefined);
+      }
+    } else {
+      if (optionToSubmit) {
+        await submitAnswer(optionToSubmit);
+      } else {
+        handleSkip();
+      }
+    }
+  };
+
+
+  const handleSkip = () => {
+    if (!question) return;
+    if (question.order === 8) {
+      setScreen('contact_capture');
+    } else if (question.order === 9) {
+      if (sessionId) loadResult(sessionId);
+    } else {
+      setScreen(screenForProgress(question.order + 1));
     }
   };
 
@@ -183,7 +232,6 @@ export default function AssessmentPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? 'Unable to save your contact details');
 
-      // GA4: assessment_capture_submit — no PII in params
       trackCaptureSubmit();
 
       setHasContact(true);
@@ -224,7 +272,6 @@ export default function AssessmentPage() {
       setResult(resultData.result);
       setScreen('result');
 
-      // GA4: assessment_result_view — band and flags are category-level, not clinical detail
       trackResultView(scoreData.band ?? '', Array.isArray(scoreData.flags) ? scoreData.flags : []);
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'Unable to complete the assessment');
@@ -233,61 +280,138 @@ export default function AssessmentPage() {
     }
   };
 
+  // Minimal full-screen spinner on initial session load (no duplicate "Knee Check" card)
+  if (screen === 'intro') {
+    return (
+      <main className="assessment-page">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '320px' }}>
+          <Loader size="lg" color="primary" label="Preparing assessment..." />
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="assessment-page">
       <section className="assessment-card" aria-labelledby="assessment-title">
-        <p className="assessment-muted">Free assessment</p>
-        <h1 id="assessment-title">Knee Check</h1>
-        {screen !== 'intro' && (
-          <>
-            <p className="assessment-muted">{questionNumber} of {questions.length} questions</p>
+        {/* Header with Title, Subtitle, and Progress Bar */}
+        {screen !== 'result' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
+              <div>
+                <p className="assessment-muted" style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)' }}>
+                  Free assessment
+                </p>
+                <h1 id="assessment-title" style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--color-navy)', margin: '0.25rem 0' }}>
+                  Knee Check
+                </h1>
+                <p className="assessment-muted" style={{ fontSize: '0.9rem', margin: 0 }}>
+                  {questionNumber} of {questions.length} questions
+                </p>
+              </div>
+              <div style={{ textAlign: 'right', paddingTop: '0.25rem' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
+                  {progress}% complete
+                </span>
+              </div>
+            </div>
+
             <div className="assessment-progress" role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={questionNumber}>
               <div className="assessment-progress__bar" style={{ width: `${progress}%` }} />
             </div>
-          </>
+          </div>
         )}
 
-        {screen === 'intro' && (
-          <div key="intro" className="assessment-step-content">
-            <p>This assessment uses doctor-approved configuration when it becomes available. It does not provide a diagnosis.</p>
-            <div className="assessment-actions assessment-actions--single">
-              <button className="assessment-button" type="button" onClick={start} disabled={isLoading} data-cursor="button">
-                {isLoading ? (
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                    <Loader size="sm" color="white" />
-                    <span>Starting…</span>
-                  </span>
-                ) : resumeAvailable ? (
-                  'Resume assessment'
-                ) : (
-                  'Start assessment'
-                )}
+        {/* QUESTION SCREEN (Q1 TO Q9) */}
+        {question && (
+          <div key={screen} className="assessment-step-content">
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-navy)', marginBottom: '1.25rem', lineHeight: '1.4' }}>
+              {question.prompt}
+            </h2>
+
+            <div className="assessment-options">
+              {question.options.map((option) => {
+                const isSelected = selectedOption === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className={`assessment-option ${isSelected ? 'assessment-option--selected' : ''}`}
+                    onClick={() => {
+                      setActiveSelection((prev) => ({ ...prev, [question.id]: option.value }));
+                      submitAnswer(option.value);
+                    }}
+
+                    disabled={isLoading}
+                    data-cursor="button"
+                  >
+                    <span style={{ fontWeight: isSelected ? 700 : 500 }}>{option.label}</span>
+                    <span aria-hidden="true" style={{ color: isSelected ? 'var(--color-primary)' : 'inherit', fontSize: '1.1rem' }}>
+                      {isSelected ? '✓' : '→'}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* ACTION FOOTER BUTTONS BAR (PREVIOUS, BOOK APPOINTMENT, SKIP, NEXT/END) */}
+            <div className="assessment-question-actions">
+              {question.order > 1 && (
+                <button
+                  type="button"
+                  className="btn-assessment-action btn-assessment-action--prev"
+                  onClick={goBack}
+                  disabled={isLoading}
+                  data-cursor="button"
+                >
+                  <span>←</span>
+                  <span>Previous</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                className="btn-assessment-action btn-assessment-action--book"
+                onClick={() => setIsBookingModalOpen(true)}
+                data-cursor="button"
+              >
+                <span>📅</span>
+                <span>Book Appointment</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-assessment-action btn-assessment-action--skip"
+                onClick={handleSkip}
+                disabled={isLoading}
+                data-cursor="button"
+              >
+                <span>⏭️</span>
+                <span>Skip Question</span>
+              </button>
+
+              <button
+                type="button"
+                className={`btn-assessment-action btn-assessment-action--next ${question.order === 9 ? 'btn-assessment-action--end' : ''}`}
+                onClick={handleNext}
+                disabled={isLoading}
+                data-cursor="button"
+              >
+                <span>{question.order === 9 ? 'End Assessment' : 'Next'}</span>
+                <span>→</span>
               </button>
             </div>
           </div>
+
         )}
 
-        {question && (
-          <div key={screen} className="assessment-step-content">
-            <h2>{question.prompt}</h2>
-            <div className="assessment-options">
-              {question.options.map((option) => (
-                <button className="assessment-option" type="button" key={option.value} onClick={() => submitAnswer(option.value)} disabled={isLoading} data-cursor="button">
-                  <span>{option.label}</span>
-                  <span aria-hidden="true">→</span>
-                </button>
-              ))}
-            </div>
-            <div className="assessment-actions">
-              <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading} data-cursor="button">Back</button>
-            </div>
-          </div>
-        )}
-
+        {/* CONTACT CAPTURE SCREEN */}
         {screen === 'contact_capture' && (
           <form key="contact_capture" className="assessment-form assessment-step-content" onSubmit={submitContact}>
-            <h2>Contact details</h2>
-            <p>We use these details to follow up about your assessment request.</p>
+            <h2 style={{ fontSize: '1.35rem', color: 'var(--color-navy)', marginBottom: '0.25rem' }}>Contact details</h2>
+            <p className="assessment-muted" style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>
+              We use these details to record your consent and deliver your clinical assessment score.
+            </p>
             <label className="assessment-field">Full Name<input name="name" autoComplete="name" required minLength={2} maxLength={120} /></label>
             <label className="assessment-field">WhatsApp/Mobile<input name="phone" type="tel" autoComplete="tel" required inputMode="tel" /></label>
             <label className="assessment-field">Email<input name="email" type="email" autoComplete="email" required /></label>
@@ -309,10 +433,13 @@ export default function AssessmentPage() {
           </form>
         )}
 
+        {/* COMPLETION SCREEN */}
         {screen === 'completion' && (
           <div key="completion" className="assessment-step-content">
-            <h2>Assessment complete</h2>
-            <p>Your responses are ready to be processed using the configured assessment rules.</p>
+            <h2 style={{ fontSize: '1.35rem', color: 'var(--color-navy)' }}>Assessment complete</h2>
+            <p className="assessment-muted" style={{ marginTop: '0.5rem' }}>
+              Your responses are ready to be processed using the doctor-approved assessment rules.
+            </p>
             <div className="assessment-actions">
               <button className="assessment-button assessment-button--secondary" type="button" onClick={goBack} disabled={isLoading} data-cursor="button">Back</button>
               <button className="assessment-button" type="button" onClick={() => loadResult()} disabled={isLoading} data-cursor="button">
@@ -329,13 +456,19 @@ export default function AssessmentPage() {
           </div>
         )}
 
+        {/* RESULT SCREEN */}
         {screen === 'result' && result && (
           <div key="result" className="assessment-step-content">
-            <h2>Clinical Assessment Guidance</h2>
+            <p className="assessment-muted" style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)' }}>
+              Assessment result
+            </p>
+            <h2 style={{ fontSize: '1.6rem', color: 'var(--color-navy)', margin: '0.25rem 0 1rem 0' }}>
+              Clinical Assessment Guidance
+            </h2>
             <p className="assessment-result-summary" style={{ fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '1.25rem' }}>{result.summary}</p>
             {result.possible_causes && result.possible_causes.length > 0 && (
               <>
-                <h3 style={{ fontSize: '1.1rem', marginTop: '1.25rem', marginBottom: '0.5rem' }}>Key Considerations</h3>
+                <h3 style={{ fontSize: '1.1rem', marginTop: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-navy)' }}>Key Considerations</h3>
                 <ul style={{ paddingLeft: '1.25rem', lineHeight: '1.6', color: 'var(--color-text-secondary)' }}>
                   {result.possible_causes.map((item) => <li key={item}>{item}</li>)}
                 </ul>
@@ -348,15 +481,16 @@ export default function AssessmentPage() {
             {/* Render Commercial Consultation CTAs ONLY for normal bands (A, B, C). Suppress for Band R safety */}
             {result.show_ctas && result.cta_options && result.cta_options.length > 0 && (
               <div className="assessment-actions" style={{ marginTop: '1.75rem', flexDirection: 'column', gap: '0.75rem' }}>
-                <a
-                  href="/consult/"
+                <button
+                  type="button"
+                  onClick={() => setIsBookingModalOpen(true)}
                   className="btn btn--pill-primary btn--lg"
                   style={{ justifyContent: 'center', width: '100%', textDecoration: 'none' }}
                   data-cursor="button"
                 >
                   <span>Book Medical Consultation</span>
                   <span className="btn--pill-icon">↗</span>
-                </a>
+                </button>
               </div>
             )}
 
@@ -370,6 +504,12 @@ export default function AssessmentPage() {
 
         {error && <p className="assessment-error" role="alert">{error}</p>}
       </section>
+
+      {/* Global Booking Modal triggered by "Book Appointment" */}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+      />
     </main>
   );
 }

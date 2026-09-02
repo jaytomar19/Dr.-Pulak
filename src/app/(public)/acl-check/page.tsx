@@ -1,5 +1,4 @@
 import CredentialsBlock from '@/components/public/CredentialsBlock';
-import GoogleReviewsWidget from '@/components/public/GoogleReviewsWidget';
 import YouTubeEmbed from '@/components/public/YouTubeEmbed';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -28,10 +27,6 @@ export default function AclCheckPage() {
         <div className="video-landing__section">
           <CredentialsBlock />
         </div>
-        
-        <div className="video-landing__section">
-          <GoogleReviewsWidget maxReviews={3} />
-        </div>
 
         <div className="video-landing__centered-cta">
           <Link href="/assessment" className="video-landing__cta">
@@ -42,3 +37,4 @@ export default function AclCheckPage() {
     </div>
   );
 }
+

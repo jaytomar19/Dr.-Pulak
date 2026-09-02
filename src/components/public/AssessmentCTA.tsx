@@ -1,6 +1,8 @@
-import Link from 'next/link';
+'use client';
+
 import Reveal from '@/components/shared/Reveal';
 import Magnetic from '@/components/shared/Magnetic';
+import { useAssessmentModal } from '@/context/AssessmentModalContext';
 
 interface AssessmentCTAProps {
   variant?: 'inline' | 'sticky' | 'hero';
@@ -17,6 +19,8 @@ export default function AssessmentCTA({
   buttonText = 'Start Free Knee Check',
   className = ''
 }: AssessmentCTAProps) {
+  const { openAssessmentModal } = useAssessmentModal();
+
   return (
     <section className={`assessment-banner assessment-banner--${variant} ${className}`}>
       <div className="container">
@@ -29,9 +33,14 @@ export default function AssessmentCTA({
             </div>
             <div className="assessment-banner__action">
               <Magnetic strength={5} maxOffset={8}>
-                <Link href="/knee-check/" className="btn btn--secondary btn--lg assessment-banner__btn" data-cursor="button">
+                <button
+                  type="button"
+                  onClick={openAssessmentModal}
+                  className="btn btn--secondary btn--lg assessment-banner__btn"
+                  data-cursor="button"
+                >
                   {buttonText} <span className="btn-arrow">→</span>
-                </Link>
+                </button>
               </Magnetic>
               <span className="assessment-banner__hint">Takes 90 seconds · Confidential</span>
             </div>
@@ -41,3 +50,4 @@ export default function AssessmentCTA({
     </section>
   );
 }
+

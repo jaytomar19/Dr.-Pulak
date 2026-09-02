@@ -102,3 +102,37 @@ export const VerifyPaymentSchema = z.object({
 });
 export type VerifyPayment = z.infer<typeof VerifyPaymentSchema>;
 
+export const CreateScheduleSchema = z.object({
+  day_of_week: z.number().int().min(0).max(6),
+  start_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Start time must be HH:mm (e.g. 10:00)'),
+  end_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'End time must be HH:mm (e.g. 13:00)'),
+  slot_duration: z.number().int().min(5).max(120).default(30),
+  is_active: z.boolean().optional().default(true),
+}).refine((data) => {
+  const [sH, sM] = data.start_time.split(':').map(Number);
+  const [eH, eM] = data.end_time.split(':').map(Number);
+  return (eH * 60 + eM) > (sH * 60 + sM);
+}, { message: 'End time must be after start time' });
+export type CreateSchedule = z.infer<typeof CreateScheduleSchema>;
+
+export const CreateAvailabilitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD format'),
+  start_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Start time must be HH:mm (e.g. 10:00)'),
+  end_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'End time must be HH:mm (e.g. 13:00)'),
+  slot_duration: z.number().int().min(5).max(120).default(30),
+  is_available: z.boolean().optional().default(true),
+}).refine((data) => {
+  const [sH, sM] = data.start_time.split(':').map(Number);
+  const [eH, eM] = data.end_time.split(':').map(Number);
+  return (eH * 60 + eM) > (sH * 60 + sM);
+}, { message: 'End time must be after start time' });
+export type CreateAvailability = z.infer<typeof CreateAvailabilitySchema>;
+
+export const CreateBlockedSlotSchema = z.object({
+  title: z.string().max(120).optional(),
+  start_time: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid start_time ISO string' }),
+  end_time: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid end_time ISO string' }),
+}).refine((data) => new Date(data.end_time) > new Date(data.start_time), { message: 'End time must be after start time' });
+export type CreateBlockedSlot = z.infer<typeof CreateBlockedSlotSchema>;
+
+

@@ -9,14 +9,19 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get('x-razorpay-signature');
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
-    // Reject webhook requests if secret is configured but signature fails
-    if (webhookSecret) {
-      if (!signature || !verifyRazorpayWebhookSignature(rawBody, signature, webhookSecret)) {
-        console.warn('Rejected invalid Razorpay webhook signature');
+    // Strict Production Security: reject request if secret is missing or signature fails
+    if (process.env.NODE_ENV === 'production' && !webhookSecret) {
+      console.error('[SECURITY] RAZORPAY_WEBHOOK_SECRET is unconfigured in production environment.');
+      return NextResponse.json({ error: 'Webhook secret unconfigured' }, { status: 500 });
+    }
+
+    if (webhookSecret || process.env.NODE_ENV === 'production') {
+      if (!signature || !webhookSecret || !verifyRazorpayWebhookSignature(rawBody, signature, webhookSecret)) {
+        console.warn('[SECURITY] Rejected invalid or unauthenticated Razorpay webhook signature');
         return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 });
       }
     } else {
-      console.warn('RAZORPAY_WEBHOOK_SECRET is unconfigured. Webhook signature check skipped for local dev.');
+      console.warn('[DEV] RAZORPAY_WEBHOOK_SECRET is unconfigured. Signature check bypassed for local dev mode.');
     }
 
     const payload = JSON.parse(rawBody);
