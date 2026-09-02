@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export const alt = 'Dr. Pulak Vatsya - Orthopaedic Knee Surgeon';
 export const size = {
