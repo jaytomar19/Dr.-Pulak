@@ -1,21 +1,26 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import type { NextRequest } from 'next/server';
 
-export default auth((req) => {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isLoggedIn = !!req.auth;
 
   // Admin route protection guard: redirect unauthenticated users to /admin/login
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    if (!isLoggedIn) {
-      const loginUrl = new URL('/admin/login', req.nextUrl.origin);
+    const sessionToken =
+      req.cookies.get('authjs.session-token')?.value ||
+      req.cookies.get('__Secure-authjs.session-token')?.value ||
+      req.cookies.get('next-auth.session-token')?.value ||
+      req.cookies.get('__Secure-next-auth.session-token')?.value;
+
+    if (!sessionToken) {
+      const loginUrl = new URL('/admin/login', req.url);
       loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ['/admin/:path*'],
